@@ -2,50 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f172a" />
   <title>PPH Workflow Tracker • U.S. Central Time</title>
   <style>
     /* ==========================================================================
-       100% EMBEDDED DESIGN SYSTEM (ZERO EXTERNAL CDNS / ZERO OFFLINE FAILURES)
+       100% EMBEDDED DESIGN SYSTEM (ZERO EXTERNAL DEPENDENCIES)
        ========================================================================== */
     :root {
-      --bg-body: #020617;
-      --bg-surface: #0f172a;
-      --bg-surface-alt: #1e293b;
-      --bg-inset: #080d1a;
-      --border-subtle: #1e293b;
-      --border-strong: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
+      --bg-body: #0f172a;
+      --bg-deep: #090e1a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #263449;
+      --border: #334155;
+      --border-soft: rgba(51, 65, 85, 0.65);
+
+      --text-main: #f8fafc;
+      --text-sec: #94a3b8;
       --text-muted: #64748b;
 
-      --emerald-400: #34d399;
-      --emerald-500: #10b981;
-      --emerald-600: #059669;
+      --emerald: #10b981;
+      --emerald-light: #34d399;
       --emerald-bg: rgba(16, 185, 129, 0.14);
-      --emerald-border: rgba(16, 185, 129, 0.35);
+      --emerald-border: rgba(16, 185, 129, 0.38);
 
-      --indigo-300: #a5b4fc;
-      --indigo-400: #818cf8;
-      --indigo-500: #6366f1;
-      --indigo-bg: rgba(99, 102, 241, 0.15);
-      --indigo-border: rgba(99, 102, 241, 0.38);
+      --sky: #38bdf8;
+      --sky-bg: rgba(56, 189, 248, 0.14);
+      --sky-border: rgba(56, 189, 248, 0.38);
 
-      --amber-300: #fcd34d;
-      --amber-400: #fbbf24;
-      --amber-500: #f59e0b;
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
       --amber-bg: rgba(245, 158, 11, 0.14);
-      --amber-border: rgba(245, 158, 11, 0.35);
+      --amber-border: rgba(245, 158, 11, 0.38);
 
-      --rose-300: #fda4af;
-      --rose-400: #fb7185;
-      --rose-500: #f43f5e;
-      --rose-600: #e11d48;
+      --rose: #f43f5e;
+      --rose-light: #fb7185;
       --rose-bg: rgba(244, 63, 94, 0.14);
-      --rose-border: rgba(244, 63, 94, 0.35);
+      --rose-border: rgba(244, 63, 94, 0.38);
 
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
     }
 
     *, *::before, *::after {
@@ -57,14 +58,15 @@
       margin: 0;
       padding: 0;
       background-color: var(--bg-body);
-      color: var(--text-primary);
+      color: var(--text-main);
       font-family: var(--font-sans);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom, 20px);
     }
 
-    button, select, input, textarea {
+    button, input, select, textarea {
       font-family: inherit;
       touch-action: manipulation;
     }
@@ -78,113 +80,105 @@
       -moz-appearance: textfield;
     }
 
-    .mono {
-      font-family: var(--font-mono);
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    .mono { font-family: var(--font-mono); }
+    .hidden { display: none !important; }
 
     /* Animations */
     @keyframes pulseDot {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.88); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
-    .pulse-dot {
-      animation: pulseDot 1.8s infinite ease-in-out;
-    }
+    .pulse-dot { animation: pulseDot 1.8s infinite ease-in-out; }
 
     @keyframes pulseCutoff {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.48); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.55); }
       50% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
     }
     .cutoff-alert {
-      animation: pulseCutoff 1.4s infinite;
-      border-color: rgba(244, 63, 94, 0.65) !important;
+      animation: pulseCutoff 1.3s infinite;
+      border-color: var(--rose) !important;
     }
 
     /* ==========================================================================
-       HEADER BAR
+       STICKY HEADER & SEGMENTED TAB BAR
        ========================================================================== */
     .app-header {
       position: sticky;
       top: 0;
       z-index: 30;
-      background-color: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 16px;
+      background-color: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: max(12px, env(safe-area-inset-top)) 16px 12px 16px;
     }
 
     .header-inner {
-      max-width: 1440px;
+      max-width: 1380px;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .header-top-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
     }
 
     .brand-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--emerald) 0%, var(--sky) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
     }
 
     .brand-icon svg {
       width: 24px;
       height: 24px;
-      color: #ffffff;
+      color: #090e1a;
     }
 
-    .brand-title-row {
+    .brand-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
     }
 
-    .brand-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-    }
-
-    .shift-pill {
+    .shift-badge {
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 10px;
+      padding: 2px 9px;
       border-radius: 999px;
-      background-color: var(--bg-surface-alt);
-      color: var(--emerald-400);
+      background: var(--emerald-bg);
+      color: var(--emerald-light);
       border: 1px solid var(--emerald-border);
     }
 
     .brand-sub {
-      margin: 3px 0 0 0;
+      margin: 2px 0 0 0;
       font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .brand-sub strong {
-      color: #e2e8f0;
+      color: var(--text-sec);
     }
 
     .header-controls {
@@ -195,242 +189,257 @@
     }
 
     .hdr-btn {
-      min-height: 44px;
-      padding: 8px 14px;
+      min-height: 42px;
+      padding: 6px 12px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 700;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
-      color: #e2e8f0;
+      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+      color: var(--text-main);
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       cursor: pointer;
-      transition: transform 0.1s ease, background-color 0.15s ease;
+      transition: transform 0.08s ease, background-color 0.15s ease;
     }
 
-    .hdr-btn:active {
-      transform: scale(0.96);
-    }
-
-    .hdr-btn svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
+    .hdr-btn:active { transform: scale(0.96); }
+    .hdr-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
 
     .clock-pill {
-      background-color: #162033;
-      border-color: var(--border-strong);
+      background-color: var(--bg-deep);
+      border-color: var(--border);
     }
 
     .clock-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background-color: var(--emerald-400);
+      background-color: var(--emerald-light);
       flex-shrink: 0;
     }
 
     .clock-time {
       font-family: var(--font-mono);
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #ffffff;
     }
 
     .tz-tag {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 8px;
-      background-color: var(--emerald-bg);
-      color: var(--emerald-300);
-      border: 1px solid var(--emerald-border);
+      padding: 2px 7px;
+      border-radius: 7px;
+      background: var(--sky-bg);
+      color: var(--sky);
+      border: 1px solid var(--sky-border);
     }
 
     .btn-sync-on {
-      background-color: var(--indigo-bg);
-      border-color: var(--indigo-border);
-      color: var(--indigo-300);
+      background-color: var(--sky-bg);
+      border-color: var(--sky-border);
+      color: var(--sky);
     }
 
-    .btn-backfill {
-      background-color: var(--emerald-bg);
-      border-color: var(--emerald-border);
-      color: var(--emerald-300);
+    .btn-chime-on {
+      background-color: var(--amber-bg);
+      border-color: var(--amber-border);
+      color: var(--amber-light);
     }
 
-    .btn-reset {
-      background-color: var(--rose-bg);
-      border-color: var(--rose-border);
-      color: var(--rose-300);
+    /* Segmented Navigation Bar */
+    .nav-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background-color: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px;
+      max-width: 440px;
+      width: 100%;
     }
+
+    .nav-tab {
+      min-height: 44px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-sec);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, var(--emerald) 0%, #0ea5e9 100%);
+      color: #090e1a;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .nav-tab svg { width: 17px; height: 17px; }
 
     /* ==========================================================================
-       MAIN LAYOUT & KPI GRID
+       MAIN CONTAINER & KPI STRIP
        ========================================================================== */
     .main-container {
-      max-width: 1440px;
+      max-width: 1380px;
       margin: 0 auto;
-      padding: 18px 16px 36px 16px;
+      padding: 16px 16px 40px 16px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
-    .kpi-grid {
+    .kpi-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 960px) {
+      .kpi-grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .kpi-grid-3 {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 12px;
     }
 
-    @media (min-width: 600px) {
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
+    @media (min-width: 640px) {
+      .kpi-grid-3 { grid-template-columns: repeat(3, 1fr); }
     }
 
     .kpi-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 18px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 15px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
     }
 
     .kpi-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
     .kpi-label {
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      color: var(--text-sec);
     }
 
-    .kpi-pill {
-      font-size: 11px;
+    .pill {
+      font-size: 10.5px;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 3px 8px;
       border-radius: 999px;
-      background-color: var(--bg-surface-alt);
-      color: var(--text-secondary);
+      background-color: var(--bg-deep);
+      color: var(--text-sec);
+      white-space: nowrap;
     }
+    .pill.emerald { background: var(--emerald-bg); color: var(--emerald-light); border: 1px solid var(--emerald-border); }
+    .pill.sky     { background: var(--sky-bg);     color: var(--sky);           border: 1px solid var(--sky-border); }
+    .pill.amber   { background: var(--amber-bg);   color: var(--amber-light);   border: 1px solid var(--amber-border); }
+    .pill.rose    { background: var(--rose-bg);    color: var(--rose-light);    border: 1px solid var(--rose-border); }
 
-    .kpi-pill.emerald {
-      background-color: var(--emerald-bg);
-      color: var(--emerald-300);
-    }
-
-    .kpi-pill.indigo {
-      background-color: var(--indigo-bg);
-      color: var(--indigo-300);
-    }
-
-    .kpi-pill.rose {
-      background-color: var(--rose-bg);
-      color: var(--rose-300);
-    }
-
-    .kpi-value-row {
-      margin: 10px 0;
+    .kpi-val-row {
+      margin: 8px 0 6px 0;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    .kpi-number {
+    .kpi-num {
       font-family: var(--font-mono);
-      font-size: 36px;
+      font-size: 30px;
       font-weight: 900;
       line-height: 1;
       color: #ffffff;
     }
-
-    .kpi-number.emerald { color: var(--emerald-400); }
-    .kpi-number.indigo  { color: var(--indigo-400); }
-    .kpi-number.rose    { color: var(--rose-400); }
-    .kpi-number.slate   { color: #cbd5e1; }
+    @media (min-width: 640px) { .kpi-num { font-size: 34px; } }
+    .kpi-num.emerald { color: var(--emerald-light); }
+    .kpi-num.sky     { color: var(--sky); }
+    .kpi-num.amber   { color: var(--amber-light); }
+    .kpi-num.rose    { color: var(--rose-light); }
 
     .kpi-unit {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--text-sec);
     }
 
     .kpi-sub {
       margin: 0;
-      font-size: 12px;
-      color: var(--text-secondary);
+      font-size: 11.5px;
+      color: var(--text-sec);
     }
 
     .progress-track {
       width: 100%;
-      height: 8px;
+      height: 7px;
       border-radius: 999px;
-      background-color: var(--bg-surface-alt);
+      background-color: var(--bg-deep);
       overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
       border-radius: 999px;
-      background-color: var(--emerald-500);
-      transition: width 0.3s ease, background-color 0.25s ease;
+      background: linear-gradient(90deg, var(--emerald), var(--sky));
+      transition: width 0.25s ease, background-color 0.25s ease;
     }
 
     /* ==========================================================================
-       TWO-COLUMN WORKSPACE
+       TODAY WORKSPACE GRID
        ========================================================================== */
     .workspace-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 18px;
+      gap: 16px;
       align-items: start;
     }
 
-    @media (min-width: 1060px) {
-      .workspace-grid {
-        grid-template-columns: 5fr 7fr;
-      }
+    @media (min-width: 1040px) {
+      .workspace-grid { grid-template-columns: 5fr 7fr; }
     }
 
-    .left-col {
+    .col-stack {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
-    .panel-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
     }
 
-    /* Active Hour Banner */
+    /* Active Block Banner */
     .active-banner {
-      background-color: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 14px;
+      background-color: var(--bg-deep);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
       margin-bottom: 14px;
     }
 
@@ -440,48 +449,48 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
 
     .active-banner-title {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #ffffff;
     }
 
-    .countdown-badge {
+    .countdown-pill {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       padding: 3px 9px;
       border-radius: 8px;
-      background-color: var(--indigo-bg);
-      color: var(--indigo-300);
-      border: 1px solid var(--indigo-border);
+      background: var(--sky-bg);
+      color: var(--sky);
+      border: 1px solid var(--sky-border);
     }
 
-    /* Giant Touch "+1 ORDER COMPLETED" + "-1" Undo */
-    .primary-action-row {
+    /* 76px Touch Action Console */
+    .action-row {
       display: flex;
       align-items: stretch;
       gap: 10px;
       margin-bottom: 14px;
     }
 
-    .btn-complete-main {
+    .btn-plus-order {
       flex: 1;
-      min-height: 80px;
+      height: 76px;
       border: none;
       border-radius: 16px;
-      background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
-      color: #020617;
-      font-size: 18px;
+      background: linear-gradient(135deg, var(--emerald) 0%, #0ea5e9 100%);
+      color: #090e1a;
+      font-size: 17px;
       font-weight: 900;
       letter-spacing: -0.01em;
-      padding: 12px 16px;
+      padding: 0 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -492,370 +501,270 @@
       user-select: none;
     }
 
-    .btn-complete-main:hover {
-      filter: brightness(1.06);
-    }
+    .btn-plus-order:active { transform: scale(0.97); }
+    .btn-plus-order svg { width: 24px; height: 24px; flex-shrink: 0; }
 
-    .btn-complete-main:active {
-      transform: scale(0.97);
-    }
-
-    .btn-complete-main svg {
-      width: 26px;
-      height: 26px;
-      flex-shrink: 0;
-    }
-
-    .active-count-badge {
+    .active-count-chip {
       font-family: var(--font-mono);
       font-size: 16px;
       font-weight: 900;
-      padding: 4px 12px;
-      border-radius: 11px;
-      background-color: rgba(2, 6, 23, 0.22);
-      color: #020617;
+      padding: 4px 11px;
+      border-radius: 10px;
+      background-color: rgba(9, 14, 26, 0.22);
+      color: #090e1a;
     }
 
-    .btn-undo-main {
+    .btn-undo-order {
       width: 68px;
-      min-height: 80px;
+      height: 76px;
       border-radius: 16px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
-      color: #e2e8f0;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 2px;
       cursor: pointer;
-      transition: transform 0.08s ease, background-color 0.15s ease;
       user-select: none;
+      transition: transform 0.08s ease;
     }
 
-    .btn-undo-main:active {
-      transform: scale(0.94);
-    }
+    .btn-undo-order:active { transform: scale(0.94); }
+    .btn-undo-num { font-family: var(--font-mono); font-size: 18px; font-weight: 800; }
+    .btn-undo-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-sec); }
 
-    .btn-undo-num {
-      font-family: var(--font-mono);
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .btn-undo-lbl {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-    }
-
-    /* 4-Minute Investigation Timer Card */
+    /* 4-Minute Investigation Timer */
     .timer-box {
-      background-color: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 16px;
+      background-color: var(--bg-deep);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 14px;
       transition: border-color 0.2s ease;
     }
 
-    .timer-header {
+    .timer-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .timer-title {
+    .timer-label {
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      color: var(--text-sec);
     }
 
     .timer-status {
-      margin: 4px 0 0 0;
+      margin: 3px 0 0 0;
       font-size: 12px;
       font-weight: 600;
-      color: var(--emerald-400);
+      color: var(--emerald-light);
     }
-
-    .timer-status.amber { color: var(--amber-400); }
-    .timer-status.rose  { color: var(--rose-400); font-weight: 800; }
+    .timer-status.amber { color: var(--amber-light); }
+    .timer-status.rose  { color: var(--rose-light); font-weight: 800; }
 
     .timer-clock {
       font-family: var(--font-mono);
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 900;
-      color: var(--emerald-400);
-      letter-spacing: -0.02em;
+      color: var(--emerald-light);
     }
+    .timer-clock.amber { color: var(--amber-light); }
+    .timer-clock.rose  { color: var(--rose-light); }
 
-    .timer-clock.amber { color: var(--amber-400); }
-    .timer-clock.rose  { color: var(--rose-400); }
-
-    .timer-btn-row {
+    .timer-btns {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
-    .timer-ctrl-btn {
-      min-height: 48px;
-      border-radius: 12px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
-      color: #ffffff;
+    .btn-secondary {
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+      color: var(--text-main);
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       transition: transform 0.08s ease, background-color 0.15s ease;
     }
 
-    .timer-ctrl-btn.secondary {
-      color: #cbd5e1;
+    .btn-secondary:active { transform: scale(0.96); }
+    .btn-secondary.emerald { background: var(--emerald-bg); border-color: var(--emerald-border); color: var(--emerald-light); }
+    .btn-secondary.sky     { background: var(--sky-bg);     border-color: var(--sky-border);     color: var(--sky); }
+    .btn-secondary.rose    { background: var(--rose-bg);    border-color: var(--rose-border);    color: var(--rose-light); }
+
+    /* Context Note Input */
+    .context-note-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
     }
 
-    .timer-ctrl-btn:active {
-      transform: scale(0.96);
+    .field-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sec);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-size: 13.5px;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--sky);
+    }
+
+    .console-utility-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
     /* ==========================================================================
        1-TAP NOTE SNIPPETS
        ========================================================================== */
-    .snippets-header {
+    .card-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 12px;
     }
 
-    .section-heading {
+    .card-title {
       margin: 0;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
       color: #ffffff;
     }
 
-    .section-sub {
-      margin: 3px 0 0 0;
+    .card-sub {
+      margin: 2px 0 0 0;
       font-size: 12px;
-      color: var(--text-secondary);
+      color: var(--text-sec);
     }
 
-    .btn-add-snip {
-      min-height: 44px;
-      padding: 8px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--indigo-border);
-      background-color: var(--indigo-bg);
-      color: var(--indigo-300);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .btn-add-snip:active {
-      transform: scale(0.96);
-    }
-
-    .snippet-form {
-      background-color: var(--bg-inset);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
+    .snippets-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-
-    .snippet-form-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    @media (min-width: 520px) {
-      .snippet-form-row {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .form-input {
-      width: 100%;
-      min-height: 44px;
-      padding: 10px 12px;
-      border-radius: 11px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface);
-      color: #ffffff;
-      font-size: 13px;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--emerald-500);
-    }
-
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .snippets-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
 
     .snip-card {
-      border-radius: 14px;
-      padding: 13px 14px;
-      border: 1px solid var(--border-strong);
-      background-color: rgba(30, 41, 59, 0.45);
+      border-radius: var(--radius-md);
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
       cursor: pointer;
       user-select: none;
-      transition: transform 0.08s ease, background-color 0.15s ease;
+      transition: transform 0.08s ease;
     }
 
-    .snip-card:active {
-      transform: scale(0.985);
-    }
-
-    .snip-card.verify {
-      border-color: var(--emerald-border);
-      background-color: rgba(16, 185, 129, 0.07);
-    }
-
-    .snip-card.deny {
-      border-color: var(--rose-border);
-      background-color: rgba(244, 63, 94, 0.07);
-    }
-
-    .snip-card.neutral {
-      border-color: var(--amber-border);
-      background-color: rgba(245, 158, 11, 0.07);
-    }
+    .snip-card:active { transform: scale(0.985); }
+    .snip-card.verify  { border-color: var(--emerald-border); background: rgba(16, 185, 129, 0.07); }
+    .snip-card.deny    { border-color: var(--rose-border);    background: rgba(244, 63, 94, 0.07); }
+    .snip-card.neutral { border-color: var(--amber-border);   background: rgba(245, 158, 11, 0.07); }
 
     .snip-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
-    .snip-tag {
-      font-size: 12px;
-      font-weight: 800;
-    }
+    .snip-tag { font-size: 12px; font-weight: 800; }
+    .snip-tag.verify  { color: var(--emerald-light); }
+    .snip-tag.deny    { color: var(--rose-light); }
+    .snip-tag.neutral { color: var(--amber-light); }
 
-    .snip-tag.verify { color: var(--emerald-400); }
-    .snip-tag.deny   { color: var(--rose-400); }
-    .snip-tag.neutral { color: var(--amber-400); }
-
-    .snip-controls {
+    .snip-right {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .copy-pill {
-      font-size: 11px;
+    .copy-chip {
+      font-size: 10.5px;
       font-weight: 700;
       padding: 3px 8px;
       border-radius: 7px;
-      background-color: var(--bg-surface);
-      color: #cbd5e1;
-      border: 1px solid var(--border-strong);
+      background-color: var(--bg-card);
+      color: var(--text-sec);
+      border: 1px solid var(--border);
     }
 
-    .copy-pill.copied {
-      background-color: var(--emerald-500);
-      color: #020617;
-      border-color: var(--emerald-500);
+    .copy-chip.copied {
+      background-color: var(--emerald);
+      color: #090e1a;
+      border-color: var(--emerald);
       font-weight: 800;
     }
 
     .btn-del-snip {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       border: none;
       background-color: rgba(15, 23, 42, 0.85);
-      color: var(--text-secondary);
+      color: var(--text-sec);
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .btn-del-snip:hover {
-      background-color: var(--rose-bg);
-      color: var(--rose-300);
-    }
-
-    .snip-body {
-      margin: 0;
-      font-size: 12.5px;
-      line-height: 1.48;
-      color: #cbd5e1;
-    }
+    .btn-del-snip:hover { background: var(--rose-bg); color: var(--rose-light); }
+    .snip-text { margin: 0; font-size: 12.5px; line-height: 1.45; color: #cbd5e1; }
 
     /* ==========================================================================
        9-BLOCK SHIFT SCHEDULE TABLE
        ========================================================================== */
     .table-card {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
     }
 
-    .table-header-bar {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--border-subtle);
+    .table-head-bar {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-    }
-
-    .table-title {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    .table-sub {
-      margin: 3px 0 0 0;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .paid-hrs-badge {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 9px;
-      background-color: var(--bg-surface-alt);
-      color: #cbd5e1;
+      gap: 8px;
     }
 
     .table-scroll {
@@ -870,151 +779,113 @@
     }
 
     .shift-table thead tr {
-      background-color: rgba(8, 13, 26, 0.75);
-      border-bottom: 1px solid var(--border-subtle);
+      background-color: rgba(9, 14, 26, 0.72);
+      border-bottom: 1px solid var(--border);
     }
 
     .shift-table th {
-      padding: 11px 10px;
-      font-size: 11px;
+      padding: 10px 8px;
+      font-size: 10.5px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--text-secondary);
+      color: var(--text-sec);
       white-space: nowrap;
     }
 
-    .shift-table th:first-child { padding-left: 16px; }
-    .shift-table th:last-child  { padding-right: 16px; text-align: right; }
+    .shift-table th:first-child { padding-left: 14px; }
+    .shift-table th:last-child  { padding-right: 14px; text-align: right; }
 
     .shift-table tbody tr {
-      border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+      border-bottom: 1px solid var(--border-soft);
       cursor: pointer;
-      transition: background-color 0.15s ease;
+      transition: background-color 0.12s ease;
     }
 
-    .shift-table tbody tr:hover {
-      background-color: rgba(30, 41, 59, 0.45);
-    }
-
-    .shift-table tbody tr.row-selected {
-      background-color: rgba(16, 185, 129, 0.11);
-    }
-
-    .shift-table tbody tr.row-lunch {
-      background-color: rgba(245, 158, 11, 0.05);
-    }
+    .shift-table tbody tr:hover { background-color: rgba(51, 65, 85, 0.35); }
+    .shift-table tbody tr.row-selected { background-color: rgba(16, 185, 129, 0.12); }
+    .shift-table tbody tr.row-lunch { background-color: rgba(245, 158, 11, 0.05); }
 
     .shift-table td {
-      padding: 11px 10px;
+      padding: 10px 8px;
       vertical-align: middle;
     }
-
-    .shift-table td:first-child { padding-left: 16px; }
-    .shift-table td:last-child  { padding-right: 16px; text-align: right; }
+    .shift-table td:first-child { padding-left: 14px; }
+    .shift-table td:last-child  { padding-right: 14px; text-align: right; }
 
     .block-cell {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
     .sel-dot {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background-color: var(--border-strong);
+      background-color: var(--border);
       flex-shrink: 0;
     }
-
     .sel-dot.active {
-      background-color: var(--emerald-400);
+      background-color: var(--emerald-light);
       box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.22);
     }
 
-    .block-name-row {
+    .block-title-row {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 5px;
     }
 
-    .block-name {
-      font-weight: 800;
-      font-size: 14px;
-      color: #ffffff;
-    }
+    .block-name { font-weight: 800; font-size: 13.5px; color: #ffffff; }
 
     .tag-live {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 900;
       padding: 2px 6px;
       border-radius: 5px;
-      background-color: var(--emerald-500);
-      color: #020617;
-      text-transform: uppercase;
-    }
-
-    .tag-selected {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 5px;
-      background-color: var(--bg-surface-alt);
-      color: var(--emerald-300);
+      background-color: var(--emerald);
+      color: #090e1a;
       text-transform: uppercase;
     }
 
     .block-time {
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-secondary);
+      font-size: 11px;
+      color: var(--text-sec);
       margin-top: 2px;
+      white-space: nowrap;
     }
 
-    .type-cycle-btn {
+    .type-pill-btn {
       min-height: 40px;
-      padding: 6px 11px;
-      border-radius: 11px;
-      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 11.5px;
       font-weight: 700;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
-      color: #e2e8f0;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       white-space: nowrap;
       cursor: pointer;
-      transition: transform 0.08s ease;
     }
+    .type-pill-btn:active { transform: scale(0.95); }
+    .type-pill-btn.break { background: var(--sky-bg);   border-color: var(--sky-border);   color: var(--sky); }
+    .type-pill-btn.lunch { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber-light); }
 
-    .type-cycle-btn:active {
-      transform: scale(0.95);
-    }
-
-    .type-cycle-btn.break {
-      background-color: var(--indigo-bg);
-      border-color: var(--indigo-border);
-      color: var(--indigo-300);
-    }
-
-    .type-cycle-btn.lunch {
-      background-color: var(--amber-bg);
-      border-color: var(--amber-border);
-      color: var(--amber-300);
-    }
-
-    .stepper-wrap {
+    .stepper {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .step-btn {
       width: 44px;
       height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
       color: #ffffff;
       font-size: 20px;
       font-weight: 900;
@@ -1022,102 +893,302 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.08s ease, background-color 0.15s ease;
       user-select: none;
     }
-
-    .step-btn.inc {
-      color: var(--emerald-400);
-    }
-
-    .step-btn:active {
-      transform: scale(0.9);
-    }
+    .step-btn.inc { color: var(--emerald-light); }
+    .step-btn:active { transform: scale(0.9); }
 
     .step-val {
-      width: 34px;
+      width: 30px;
       text-align: center;
-      font-family: var(--font-mono);
-      font-size: 16px;
-      font-weight: 800;
-      color: #ffffff;
-      user-select: none;
-    }
-
-    .cumul-cell {
-      text-align: right;
       font-family: var(--font-mono);
       font-size: 15px;
       font-weight: 800;
       color: #ffffff;
     }
 
-    .target-cell {
+    .cumul-td {
       text-align: right;
       font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-secondary);
-      white-space: nowrap;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #ffffff;
     }
 
     @media (max-width: 560px) {
-      .hide-mobile {
-        display: none;
-      }
-    }
-
-    .pace-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 9px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      border: 1px solid transparent;
-    }
-
-    .pace-pill.emerald {
-      background-color: var(--emerald-bg);
-      color: var(--emerald-300);
-      border-color: var(--emerald-border);
-    }
-
-    .pace-pill.indigo {
-      background-color: var(--indigo-bg);
-      color: var(--indigo-300);
-      border-color: var(--indigo-border);
-    }
-
-    .pace-pill.amber {
-      background-color: var(--amber-bg);
-      color: var(--amber-300);
-      border-color: var(--amber-border);
-    }
-
-    .pace-pill.rose {
-      background-color: var(--rose-bg);
-      color: var(--rose-300);
-      border-color: var(--rose-border);
-    }
-
-    .pace-pill.slate {
-      background-color: var(--bg-surface-alt);
-      color: var(--text-secondary);
+      .hide-xs { display: none; }
     }
 
     .shift-table tfoot tr {
-      border-top: 2px solid var(--border-strong);
-      background-color: rgba(8, 13, 26, 0.85);
+      border-top: 2px solid var(--border);
+      background-color: rgba(9, 14, 26, 0.85);
       font-weight: 800;
     }
+    .shift-table tfoot td { padding: 13px 8px; }
+    .shift-table tfoot td:first-child { padding-left: 14px; }
+    .shift-table tfoot td:last-child  { padding-right: 14px; text-align: right; }
 
-    .shift-table tfoot td {
-      padding: 14px 10px;
+    /* ==========================================================================
+       WEEKLY LOG TAB STYLES
+       ========================================================================== */
+    .log-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
     }
 
-    .shift-table tfoot td:first-child { padding-left: 16px; }
-    .shift-table tfoot td:last-child  { padding-right: 16px; text-align: right; }
+    .week-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .select-input {
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      flex: 1;
+      max-width: 320px;
+    }
+
+    .log-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export-csv {
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--emerald) 0%, #0ea5e9 100%);
+      color: #090e1a;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+    .btn-export-csv:active { transform: scale(0.96); }
+    .btn-export-csv svg { width: 16px; height: 16px; }
+
+    /* Hourly Trend Insight Card */
+    .trend-callouts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (min-width: 580px) {
+      .trend-callouts { grid-template-columns: 1fr 1fr; }
+    }
+
+    .callout-box {
+      background-color: var(--bg-deep);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .callout-box.strong { border-color: var(--emerald-border); background: rgba(16, 185, 129, 0.08); }
+    .callout-box.slow   { border-color: var(--amber-border);   background: rgba(245, 158, 11, 0.08); }
+
+    .callout-lbl { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-sec); }
+    .callout-val { font-size: 15px; font-weight: 800; color: #ffffff; margin-top: 2px; }
+    .callout-num { font-family: var(--font-mono); font-size: 20px; font-weight: 900; }
+    .callout-num.strong { color: var(--emerald-light); }
+    .callout-num.slow   { color: var(--amber-light); }
+
+    .trend-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trend-row {
+      display: grid;
+      grid-template-columns: 118px 1fr 48px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .trend-block-lbl {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sec);
+      white-space: nowrap;
+    }
+    .trend-block-lbl strong { color: #ffffff; }
+
+    .trend-bar-track {
+      height: 12px;
+      background-color: var(--bg-deep);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .trend-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--sky);
+      transition: width 0.3s ease;
+    }
+    .trend-bar-fill.strong { background: var(--emerald); }
+    .trend-bar-fill.slow   { background: var(--amber); }
+
+    .trend-avg-val {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 800;
+      text-align: right;
+      color: #ffffff;
+    }
+
+    /* Expandable Daily Breakdown */
+    .day-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .day-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .day-summary-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: inherit;
+      padding: 14px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .day-summary-btn:hover { background-color: rgba(51, 65, 85, 0.28); }
+
+    .day-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .day-date-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .day-date-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .day-note-preview {
+      font-size: 12px;
+      color: var(--text-sec);
+      font-style: italic;
+    }
+
+    .day-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .day-stat {
+      text-align: right;
+    }
+    .day-stat-num { font-family: var(--font-mono); font-size: 18px; font-weight: 900; color: #ffffff; }
+    .day-stat-lbl { font-size: 10.5px; color: var(--text-sec); font-weight: 700; text-transform: uppercase; }
+
+    .chevron {
+      width: 20px;
+      height: 20px;
+      color: var(--text-sec);
+      transition: transform 0.2s ease;
+    }
+    .day-card.expanded .chevron { transform: rotate(180deg); color: var(--sky); }
+
+    .day-detail {
+      border-top: 1px solid var(--border);
+      background-color: var(--bg-deep);
+      padding: 14px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .day-card.expanded .day-detail { display: flex; }
+
+    .day-blocks-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .day-blocks-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .day-blocks-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .hist-block-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .hist-block-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
+      background-color: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .empty-state h3 { margin: 0 0 6px 0; font-size: 16px; color: #ffffff; }
+    .empty-state p  { margin: 0 0 16px 0; font-size: 13px; color: var(--text-sec); max-width: 420px; margin-inline: auto; }
 
     /* ==========================================================================
        MODALS & TOASTS
@@ -1126,7 +1197,7 @@
       position: fixed;
       inset: 0;
       z-index: 50;
-      background-color: rgba(2, 6, 23, 0.82);
+      background-color: rgba(9, 14, 26, 0.82);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
       display: flex;
@@ -1136,42 +1207,31 @@
     }
 
     .modal-box {
-      background-color: var(--bg-surface);
-      border: 1px solid var(--border-strong);
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 20px;
       width: 100%;
       max-width: 420px;
-      padding: 22px;
+      padding: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
     }
 
-    .modal-title {
-      margin: 0 0 6px 0;
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
-    }
+    .modal-title { margin: 0 0 6px 0; font-size: 17px; font-weight: 800; color: #ffffff; }
+    .modal-desc  { margin: 0 0 16px 0; font-size: 13px; line-height: 1.45; color: var(--text-sec); }
 
-    .modal-desc {
-      margin: 0 0 18px 0;
-      font-size: 13px;
-      line-height: 1.45;
-      color: var(--text-secondary);
-    }
-
-    .backfill-stepper {
+    .bf-row {
       display: flex;
       align-items: center;
       gap: 10px;
       margin: 10px 0 8px 0;
     }
 
-    .bf-step-btn {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-surface-alt);
+    .bf-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
       color: #ffffff;
       font-size: 24px;
       font-weight: 900;
@@ -1180,10 +1240,10 @@
 
     .bf-input {
       flex: 1;
-      height: 56px;
-      border-radius: 14px;
-      border: 1px solid var(--border-strong);
-      background-color: var(--bg-inset);
+      height: 54px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-deep);
       color: #ffffff;
       font-family: var(--font-mono);
       font-size: 26px;
@@ -1191,48 +1251,31 @@
       text-align: center;
     }
 
-    .bf-input:focus {
-      outline: none;
-      border-color: var(--emerald-500);
-    }
-
     .modal-footer {
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 8px;
+      margin-top: 18px;
     }
 
     .modal-btn {
-      min-height: 46px;
-      padding: 10px 18px;
-      border-radius: 12px;
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 11px;
       border: none;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
     }
-
-    .modal-btn.cancel {
-      background-color: var(--bg-surface-alt);
-      color: #e2e8f0;
-    }
-
-    .modal-btn.primary {
-      background-color: var(--emerald-600);
-      color: #ffffff;
-    }
-
-    .modal-btn.danger {
-      background-color: var(--rose-600);
-      color: #ffffff;
-    }
+    .modal-btn.cancel  { background-color: var(--bg-deep); color: var(--text-main); border: 1px solid var(--border); }
+    .modal-btn.primary { background-color: var(--emerald); color: #090e1a; font-weight: 800; }
+    .modal-btn.danger  { background-color: var(--rose);    color: #ffffff; }
 
     .toast-stack {
       position: fixed;
-      bottom: 18px;
-      right: 18px;
-      left: 18px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      right: 16px;
+      left: 16px;
       z-index: 60;
       display: flex;
       flex-direction: column;
@@ -1243,41 +1286,26 @@
 
     .toast-item {
       pointer-events: auto;
-      max-width: 420px;
+      max-width: 400px;
       width: 100%;
-      padding: 12px 16px;
-      border-radius: 14px;
+      padding: 11px 15px;
+      border-radius: 13px;
       font-size: 13px;
       font-weight: 600;
-      border: 1px solid var(--border-strong);
-      background-color: rgba(15, 23, 42, 0.97);
+      border: 1px solid var(--border);
+      background-color: rgba(30, 41, 59, 0.98);
       color: #f8fafc;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.48);
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
-
-    @media (min-width: 540px) {
-      .toast-item {
-        width: auto;
-      }
-    }
-
-    .toast-item.success {
-      background-color: rgba(6, 78, 59, 0.96);
-      border-color: var(--emerald-border);
-      color: #a7f3d0;
-    }
-
-    .toast-item.warning {
-      background-color: rgba(120, 53, 15, 0.96);
-      border-color: var(--amber-border);
-      color: #fde68a;
-    }
+    @media (min-width: 540px) { .toast-item { width: auto; } }
+    .toast-item.success { background-color: rgba(6, 78, 59, 0.96); border-color: var(--emerald-border); color: #a7f3d0; }
+    .toast-item.warning { background-color: rgba(120, 53, 15, 0.96); border-color: var(--amber-border); color: #fde68a; }
   </style>
 </head>
 <body>
 
-  <!-- Toast Container -->
+  <!-- Toast Notifications -->
   <div id="toast-container" class="toast-stack"></div>
 
   <!-- Confirmation Modal -->
@@ -1296,97 +1324,123 @@
   <div id="backfill-modal" class="modal-backdrop hidden">
     <div class="modal-box">
       <h3 class="modal-title">Backfill Prior Hours</h3>
-      <p id="backfill-desc" class="modal-desc">Enter total orders completed prior to the current Central Time hour.</p>
+      <p id="backfill-desc" class="modal-desc">Distribute already-completed orders across earlier active blocks.</p>
       <form id="backfill-form">
-        <label for="backfill-total-input" style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#cbd5e1;">
-          Total Orders Done So Far
-        </label>
-        <div class="backfill-stepper">
-          <button type="button" id="backfill-minus" class="bf-step-btn">−</button>
-          <input id="backfill-total-input" type="number" min="0" max="300" value="27" required class="bf-input" />
-          <button type="button" id="backfill-plus" class="bf-step-btn">+</button>
+        <label for="backfill-input" class="field-label">Total Orders Done So Far</label>
+        <div class="bf-row">
+          <button type="button" id="bf-minus" class="bf-btn">−</button>
+          <input id="backfill-input" type="number" min="0" max="300" value="27" required class="bf-input" />
+          <button type="button" id="bf-plus" class="bf-btn">+</button>
         </div>
-        <p style="margin:6px 0 0 0;font-size:11.5px;color:#94a3b8;">
-          Distributes orders evenly across active blocks earlier than your current Central Time hour.
-        </p>
         <div class="modal-footer">
-          <button type="button" id="backfill-cancel" class="modal-btn cancel">Cancel</button>
+          <button type="button" id="bf-cancel" class="modal-btn cancel">Cancel</button>
           <button type="submit" class="modal-btn primary">Apply Count</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Sticky Top Header -->
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="brand-group">
-        <div class="brand-icon">
-          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+  <!-- Add Custom Snippet Modal -->
+  <div id="snippet-modal" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <h3 class="modal-title">Add Custom Note Snippet</h3>
+      <p class="modal-desc">Saved permanently on this device for 1-tap clipboard copying.</p>
+      <form id="snippet-form" style="display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <label for="snip-tag-in" class="field-label" style="margin-bottom:4px;">Label</label>
+          <input id="snip-tag-in" type="text" placeholder="e.g., VERIFIED • Repeat Customer" required class="text-input" />
         </div>
         <div>
-          <div class="brand-title-row">
-            <h1 class="brand-title">PPH Workflow Tracker</h1>
-            <span class="shift-pill">6:00 AM – 3:00 PM CT</span>
+          <label for="snip-type-in" class="field-label" style="margin-bottom:4px;">Category</label>
+          <select id="snip-type-in" class="text-input">
+            <option value="verify">Verified (Green)</option>
+            <option value="deny">Denied (Red)</option>
+            <option value="neutral">Escalated / Info (Amber)</option>
+          </select>
+        </div>
+        <div>
+          <label for="snip-text-in" class="field-label" style="margin-bottom:4px;">Note Text</label>
+          <textarea id="snip-text-in" rows="3" placeholder="Type your standardized order note..." required class="text-input" style="resize:vertical;"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="snip-cancel" class="modal-btn cancel">Cancel</button>
+          <button type="submit" class="modal-btn primary">Save Snippet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sticky Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-top-row">
+        <div class="brand-group">
+          <div class="brand-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <p class="brand-sub">
-            Target: <strong>12–15 PPH</strong> (96–120 Orders) • <span id="live-date-label">Loading Central Date...</span>
-          </p>
+          <div>
+            <h1 class="brand-title">
+              PPH Workflow Tracker
+              <span class="shift-badge">6 AM – 3 PM CT</span>
+            </h1>
+            <p class="brand-sub">
+              Target: <strong>12–15 PPH</strong> (96–120) • <span id="live-date-label">Loading...</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="header-controls">
+          <!-- Clickable Live Clock Pill (CT vs Fixed CST) -->
+          <button id="btn-tz-toggle" type="button" class="hdr-btn clock-pill" title="Tap to toggle between America/Chicago (CT) and Fixed CST (UTC-6)">
+            <span class="clock-dot pulse-dot"></span>
+            <span id="live-clock" class="clock-time">--:--:-- AM</span>
+            <span id="tz-badge" class="tz-tag">CT</span>
+          </button>
+
+          <button id="btn-autosync" type="button" class="hdr-btn btn-sync-on">
+            <span>Auto-Sync: <strong id="autosync-lbl">ON</strong></span>
+          </button>
+
+          <button id="btn-chime" type="button" class="hdr-btn btn-chime-on">
+            <span>:55 Chime: <strong id="chime-lbl">ON</strong></span>
+          </button>
         </div>
       </div>
 
-      <div class="header-controls">
-        <!-- U.S. Central Time Pill (Tap to toggle CT vs Fixed CST) -->
-        <button id="btn-tz-toggle" type="button" class="hdr-btn clock-pill" title="Tap to switch between U.S. Central Time (America/Chicago) and Fixed CST (UTC-6)">
-          <span class="clock-dot pulse-dot"></span>
-          <span id="live-clock" class="clock-time">--:--:-- AM</span>
-          <span id="tz-badge" class="tz-tag">CT</span>
-        </button>
-
-        <!-- Auto-Sync Toggle -->
-        <button id="btn-autosync" type="button" class="hdr-btn btn-sync-on">
+      <!-- Segmented Tab Bar: Today | Weekly Log -->
+      <nav class="nav-bar" aria-label="Main views">
+        <button id="tab-today" type="button" class="nav-tab active">
           <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>Auto-Sync: <strong id="autosync-status">ON</strong></span>
+          Today
         </button>
-
-        <!-- :55 Hourly Chime -->
-        <button id="btn-chime" type="button" class="hdr-btn">
-          <svg style="color:#fbbf24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        <button id="tab-weekly" type="button" class="nav-tab">
+          <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
-          <span>:55 Chime: <strong id="chime-status">ON</strong></span>
+          Weekly Log
         </button>
-
-        <!-- Backfill Prior Hrs -->
-        <button id="btn-backfill" type="button" class="hdr-btn btn-backfill">
-          Backfill Prior Hrs
-        </button>
-
-        <!-- Reset Day -->
-        <button id="btn-reset" type="button" class="hdr-btn btn-reset">
-          Reset Day
-        </button>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <!-- Main Workspace -->
-  <main class="main-container">
+  <!-- ========================================================================
+       VIEW 1: TODAY TAB
+       ======================================================================== -->
+  <main id="view-today" class="main-container">
 
-    <!-- 4-Card KPI Strip -->
-    <section class="kpi-grid">
-      <!-- KPI 1 -->
+    <!-- 4-Card Real-Time KPI Strip -->
+    <section class="kpi-grid-4">
       <div class="kpi-card">
         <div class="kpi-top">
           <span class="kpi-label">Total Completed</span>
-          <span id="kpi-goal-pct" class="kpi-pill emerald">0% of 96</span>
+          <span id="kpi-goal-pct" class="pill emerald">0% of 96</span>
         </div>
-        <div class="kpi-value-row">
-          <span id="kpi-total" class="kpi-number">0</span>
+        <div class="kpi-val-row">
+          <span id="kpi-total" class="kpi-num">0</span>
           <span id="kpi-target-range" class="kpi-unit">/ 96–120</span>
         </div>
         <div class="progress-track">
@@ -1394,141 +1448,132 @@
         </div>
       </div>
 
-      <!-- KPI 2 -->
       <div class="kpi-card">
         <div class="kpi-top">
-          <span class="kpi-label">Real-Time Active PPH</span>
-          <span id="kpi-pph-badge" class="kpi-pill">Pre-Shift</span>
+          <span class="kpi-label">Live Real-Time PPH</span>
+          <span id="kpi-pph-badge" class="pill">Pre-Shift</span>
         </div>
-        <div class="kpi-value-row">
-          <span id="kpi-avg-pph" class="kpi-number">0.0</span>
+        <div class="kpi-val-row">
+          <span id="kpi-avg-pph" class="kpi-num">0.0</span>
           <span class="kpi-unit">orders / hr</span>
         </div>
-        <p id="kpi-active-hours-sub" class="kpi-sub">0.00 active shift hrs elapsed</p>
+        <p id="kpi-elapsed-sub" class="kpi-sub">0.00 active hrs elapsed</p>
       </div>
 
-      <!-- KPI 3 -->
       <div class="kpi-card">
         <div class="kpi-top">
-          <span class="kpi-label">Live Pace Buffer</span>
-          <span id="kpi-expected-range" class="kpi-pill mono">Exp: 0.0–0.0</span>
+          <span class="kpi-label">Pace Buffer</span>
+          <span id="kpi-exp-range" class="pill mono">Exp: 0.0</span>
         </div>
-        <div class="kpi-value-row">
-          <span id="kpi-buffer" class="kpi-number emerald">+0.0</span>
-          <span class="kpi-unit">vs 12 PPH min</span>
+        <div class="kpi-val-row">
+          <span id="kpi-buffer" class="kpi-num emerald">+0.0</span>
+          <span class="kpi-unit">vs 12 PPH</span>
         </div>
-        <p id="kpi-buffer-desc" class="kpi-sub">Synced to U.S. Central Time</p>
+        <p id="kpi-buffer-sub" class="kpi-sub">Synced to U.S. Central Time</p>
       </div>
 
-      <!-- KPI 4 -->
       <div class="kpi-card">
         <div class="kpi-top">
-          <span class="kpi-label">Required Pace / Hr</span>
-          <span id="kpi-rem-120" class="kpi-pill mono">120 max: 120 left</span>
+          <span class="kpi-label">Required Pace</span>
+          <span id="kpi-rem-max" class="pill mono">120 max: 120</span>
         </div>
-        <div class="kpi-value-row">
-          <span id="kpi-req-pph" class="kpi-number indigo">12.0</span>
-          <span class="kpi-unit">/ hr needed</span>
+        <div class="kpi-val-row">
+          <span id="kpi-req-pph" class="kpi-num sky">12.0</span>
+          <span class="kpi-unit">/ hr left</span>
         </div>
-        <p id="kpi-rem-desc" class="kpi-sub">96 orders left to hit 12 PPH goal</p>
+        <p id="kpi-rem-sub" class="kpi-sub">96 orders left to hit 96</p>
       </div>
     </section>
 
     <!-- Two-Column Workspace -->
     <div class="workspace-grid">
-
       <!-- Left Column: Action Console + Note Snippets -->
-      <div class="left-col">
-        <div class="panel-card">
-          <!-- Active Block Banner -->
+      <div class="col-stack">
+        <section class="card">
           <div class="active-banner">
             <div class="active-banner-top">
               <div class="active-banner-title">
                 <span class="clock-dot"></span>
                 <span id="active-block-banner">Block 1 • 6:00 – 7:00 AM CT</span>
               </div>
-              <span id="hour-countdown-time" class="countdown-badge">--m --s left</span>
+              <span id="hour-countdown" class="countdown-pill">--m --s left</span>
             </div>
             <div class="progress-track">
-              <div id="hour-progress-bar" class="progress-fill" style="width:0%;background-color:#6366f1;"></div>
+              <div id="hour-progress-bar" class="progress-fill" style="width:0%"></div>
             </div>
           </div>
 
-          <!-- Primary Touch Action Buttons -->
-          <div class="primary-action-row">
-            <button id="btn-complete-order" type="button" class="btn-complete-main">
+          <!-- 76px Touch Action Row -->
+          <div class="action-row">
+            <button id="btn-plus-order" type="button" class="btn-plus-order" title="Shortcut: + key">
               <svg fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
               </svg>
               <span>+1 ORDER COMPLETED</span>
-              <span id="active-block-count-pill" class="active-count-badge">0</span>
+              <span id="active-count-chip" class="active-count-chip">0</span>
             </button>
 
-            <button id="btn-undo-order" type="button" class="btn-undo-main" title="Undo 1 order in selected block">
+            <button id="btn-undo-order" type="button" class="btn-undo-order" title="Undo 1 order in active block">
               <span class="btn-undo-num">-1</span>
               <span class="btn-undo-lbl">Undo</span>
             </button>
           </div>
 
           <!-- 4-Minute Investigation Cutoff Timer -->
-          <div id="timer-card" class="timer-box">
-            <div class="timer-header">
+          <div id="timer-box" class="timer-box">
+            <div class="timer-top">
               <div>
-                <div class="timer-title">4-Minute Investigation Timer</div>
-                <p id="timer-status-text" class="timer-status">Target: Under 3:00 • Cutoff: 4:00</p>
+                <div class="timer-label">4-Minute Investigation Timer</div>
+                <p id="timer-status" class="timer-status">Target: &lt; 3:00 • Cutoff: 4:00</p>
               </div>
-              <div id="timer-display" class="timer-clock">00:00</div>
+              <div id="timer-clock" class="timer-clock">00:00</div>
             </div>
-
             <div class="progress-track">
-              <div id="timer-progress-bar" class="progress-fill" style="width:0%"></div>
+              <div id="timer-bar" class="progress-fill" style="width:0%"></div>
             </div>
-
-            <div class="timer-btn-row">
-              <button id="btn-timer-toggle" type="button" class="timer-ctrl-btn">Start Timer</button>
-              <button id="btn-timer-reset" type="button" class="timer-ctrl-btn secondary">Reset Timer</button>
+            <div class="timer-btns">
+              <button id="btn-timer-toggle" type="button" class="btn-secondary">Start Timer</button>
+              <button id="btn-timer-reset" type="button" class="btn-secondary">Reset Timer</button>
             </div>
           </div>
-        </div>
+
+          <!-- Today's Context Note -->
+          <div class="context-note-wrap">
+            <label for="today-context-note" class="field-label">
+              <span>Today's Context Note</span>
+              <span id="note-saved-indicator" style="color:var(--emerald-light);font-weight:700;opacity:0;transition:opacity 0.2s;">Saved</span>
+            </label>
+            <input id="today-context-note" type="text" class="text-input" placeholder="e.g., System lag in Block 4, heavy complex orders..." />
+          </div>
+
+          <!-- Utility Buttons -->
+          <div class="console-utility-row">
+            <button id="btn-backfill" type="button" class="btn-secondary emerald">Backfill Prior Hrs</button>
+            <button id="btn-reset-today" type="button" class="btn-secondary rose">Reset Today</button>
+          </div>
+        </section>
 
         <!-- 1-Tap Note Snippets -->
-        <div class="panel-card">
-          <div class="snippets-header">
+        <section class="card">
+          <div class="card-header-row">
             <div>
-              <h2 class="section-heading">1-Tap Note Snippets</h2>
-              <p class="section-sub">Tap any card to copy straight to your clipboard</p>
+              <h2 class="card-title">1-Tap Note Snippets</h2>
+              <p class="card-sub">Tap any card to copy straight to clipboard</p>
             </div>
-            <button id="btn-toggle-add-snippet" type="button" class="btn-add-snip">+ Add Snippet</button>
+            <button id="btn-open-snippet-modal" type="button" class="btn-secondary sky">+ Add Custom Snippet</button>
           </div>
-
-          <form id="add-snippet-form" class="snippet-form hidden">
-            <div class="snippet-form-row">
-              <input id="snippet-tag-input" type="text" placeholder="Label (e.g., VERIFIED • Repeat)" required class="form-input" />
-              <select id="snippet-type-input" class="form-input">
-                <option value="verify">Verified (Green)</option>
-                <option value="deny">Denied (Red)</option>
-                <option value="neutral">Escalated / Info (Amber)</option>
-              </select>
-            </div>
-            <textarea id="snippet-text-input" rows="2" placeholder="Paste or type your note template..." required class="form-input" style="min-height:66px;resize:vertical;"></textarea>
-            <div class="form-actions">
-              <button type="button" id="btn-cancel-snippet" class="modal-btn cancel" style="min-height:40px;padding:6px 14px;">Cancel</button>
-              <button type="submit" class="modal-btn primary" style="min-height:40px;padding:6px 14px;">Save Snippet</button>
-            </div>
-          </form>
-
-          <div id="snippets-list" class="snippets-stack"></div>
-        </div>
+          <div id="snippets-list" class="snippets-list"></div>
+        </section>
       </div>
 
       <!-- Right Column: Touch-Friendly 9-Block Shift Schedule -->
-      <div class="table-card">
-        <div class="table-header-bar">
+      <section class="table-card">
+        <div class="table-head-bar">
           <div>
-            <h2 class="table-title">9-Block Shift Schedule (6:00 AM – 3:00 PM CT)</h2>
-            <p class="table-sub">Tap any row to select • Tap status pill to switch Active Queue, +15m Break, or 1-Hr Lunch</p>
+            <h2 class="card-title">9-Block Shift Schedule (6 AM – 3 PM CT)</h2>
+            <p class="card-sub">Tap row to select • Tap pill to cycle Active Queue / +15m Break / 1-Hr Lunch</p>
           </div>
-          <span class="paid-hrs-badge">8 Paid Hrs = 96–120</span>
+          <span class="pill mono">8 Paid Hrs = 96–120</span>
         </div>
 
         <div class="table-scroll">
@@ -1536,117 +1581,166 @@
             <thead>
               <tr>
                 <th>Hour Block (CT)</th>
-                <th>Block Type</th>
+                <th>Status</th>
                 <th style="text-align:center;">Orders</th>
                 <th style="text-align:right;">Cumul.</th>
-                <th class="hide-mobile" style="text-align:right;">Target</th>
                 <th>Pace</th>
               </tr>
             </thead>
-            <tbody id="shift-table-body"></tbody>
+            <tbody id="shift-tbody"></tbody>
             <tfoot>
               <tr>
-                <td style="font-size:12px;text-transform:uppercase;letter-spacing:0.04em;color:#cbd5e1;">
-                  Shift Total (<span id="footer-paid-hours">8</span> Paid Hrs)
+                <td style="font-size:12px;text-transform:uppercase;color:var(--text-sec);">
+                  Total (<span id="ft-paid-hrs">8</span> Paid Hrs)
                 </td>
-                <td style="font-size:12px;color:#94a3b8;font-weight:600;">1-Hr Lunch Off</td>
-                <td id="footer-total-orders" style="text-align:center;font-family:var(--font-mono);font-size:16px;color:#34d399;">0</td>
-                <td id="footer-cumulative" style="text-align:right;font-family:var(--font-mono);font-size:16px;color:#ffffff;">0</td>
-                <td id="footer-target-band" class="hide-mobile" style="text-align:right;font-family:var(--font-mono);font-size:12px;color:#94a3b8;">96 – 120</td>
-                <td id="footer-overall-status" style="font-size:12px;"></td>
+                <td class="hide-xs" style="font-size:12px;color:var(--text-sec);font-weight:600;">1-Hr Lunch Off</td>
+                <td id="ft-total" style="text-align:center;font-family:var(--font-mono);font-size:16px;color:var(--emerald-light);">0</td>
+                <td id="ft-cumul" style="text-align:right;font-family:var(--font-mono);font-size:16px;color:#ffffff;">0</td>
+                <td id="ft-status" style="font-size:12px;"></td>
               </tr>
             </tfoot>
           </table>
         </div>
-      </div>
-
+      </section>
     </div>
   </main>
 
+  <!-- ========================================================================
+       VIEW 2: WEEKLY LOG TAB
+       ======================================================================== -->
+  <main id="view-weekly" class="main-container hidden">
+
+    <!-- Top Toolbar: Week Selector + Export CSV -->
+    <section class="log-toolbar">
+      <div class="week-select-wrap">
+        <label for="week-selector" class="field-label" style="white-space:nowrap;">Week:</label>
+        <select id="week-selector" class="select-input"></select>
+      </div>
+      <div class="log-actions">
+        <button id="btn-load-demo" type="button" class="btn-secondary hidden">Load Demo Week</button>
+        <button id="btn-export-csv" type="button" class="btn-export-csv">
+          <svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Export CSV
+        </button>
+      </div>
+    </section>
+
+    <!-- 3 Summary Cards for Selected Week -->
+    <section class="kpi-grid-3">
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">Total Weekly Orders</span>
+          <span id="wk-days-count" class="pill sky">0 shifts</span>
+        </div>
+        <div class="kpi-val-row">
+          <span id="wk-total-orders" class="kpi-num">0</span>
+          <span class="kpi-unit">orders</span>
+        </div>
+        <p id="wk-total-sub" class="kpi-sub">Across selected period</p>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">Weekly Avg PPH</span>
+          <span id="wk-pph-pill" class="pill">Target 12–15</span>
+        </div>
+        <div class="kpi-val-row">
+          <span id="wk-avg-pph" class="kpi-num emerald">0.0</span>
+          <span class="kpi-unit">orders / active hr</span>
+        </div>
+        <p id="wk-hours-sub" class="kpi-sub">0 active hours logged</p>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-top">
+          <span class="kpi-label">Days on Target (96+)</span>
+          <span id="wk-hit-rate" class="pill emerald">0%</span>
+        </div>
+        <div class="kpi-val-row">
+          <span id="wk-days-hit" class="kpi-num sky">0 / 0</span>
+          <span class="kpi-unit">shifts</span>
+        </div>
+        <p class="kpi-sub">Goal: 96–120 orders per 8-hr shift</p>
+      </div>
+    </section>
+
+    <!-- Hourly Trend Insight Card -->
+    <section id="trend-card" class="card">
+      <div class="card-header-row">
+        <div>
+          <h2 class="card-title">Hourly Trend Insight (All Saved Shifts)</h2>
+          <p class="card-sub">Average orders completed per active hour block — spot where to protect your pace</p>
+        </div>
+        <span id="trend-sample-pill" class="pill mono">0 shifts</span>
+      </div>
+
+      <div id="trend-content">
+        <div class="trend-callouts">
+          <div class="callout-box strong">
+            <div>
+              <div class="callout-lbl">Strongest Block</div>
+              <div id="trend-strong-lbl" class="callout-val">—</div>
+            </div>
+            <div id="trend-strong-val" class="callout-num strong">—</div>
+          </div>
+          <div class="callout-box slow">
+            <div>
+              <div class="callout-lbl">Slowest Block</div>
+              <div id="trend-slow-lbl" class="callout-val">—</div>
+            </div>
+            <div id="trend-slow-val" class="callout-num slow">—</div>
+          </div>
+        </div>
+        <div id="trend-bars" class="trend-bars"></div>
+      </div>
+    </section>
+
+    <!-- Expandable Daily Breakdown -->
+    <section>
+      <div class="card-header-row" style="padding:0 2px;">
+        <div>
+          <h2 class="card-title">Daily Shift Breakdown</h2>
+          <p class="card-sub">Tap any day to expand all 9 blocks, tweak counts, or edit context notes</p>
+        </div>
+      </div>
+      <div id="weekly-day-list" class="day-list"></div>
+    </section>
+
+  </main>
+
   <script>
-    // ==========================================================================
-    // 1. U.S. CENTRAL TIMEZONE ENGINE (America/Chicago + Fixed CST UTC-6 Toggle)
-    // ==========================================================================
+    /* ==========================================================================
+       1. CONSTANTS & U.S. CENTRAL TIME ENGINE
+       ========================================================================== */
+    const STORAGE_PREFIX = 'pph_tracker_';
+    const SNIPPETS_KEY = 'pph_custom_snippets';
+    const PREFS_KEY = 'pph_tracker_prefs_v2';
+
     const TZ_MODES = {
       CHICAGO: 'America/Chicago',
       FIXED_CST: 'Etc/GMT+6'
     };
 
-    const TZ_PREF_KEY = 'pph_standalone_tz_v1';
-    const SNIPPETS_KEY = 'pph_standalone_snippets_v1';
-    let currentTzMode = localStorage.getItem(TZ_PREF_KEY) || TZ_MODES.CHICAGO;
-
-    function getCentralParts(now = new Date(), tz = currentTzMode) {
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: tz,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      });
-
-      const map = {};
-      for (const part of formatter.formatToParts(now)) {
-        if (part.type !== 'literal') map[part.type] = part.value;
-      }
-
-      let hr = parseInt(map.hour, 10);
-      if (hr === 24) hr = 0;
-      const min = parseInt(map.minute, 10);
-      const sec = parseInt(map.second, 10);
-      const dateKey = `${map.year}-${map.month}-${map.day}`;
-
-      const timeStr = now.toLocaleTimeString('en-US', {
-        timeZone: tz,
-        hour: 'numeric',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-      });
-
-      const dateStr = now.toLocaleDateString('en-US', {
-        timeZone: tz,
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-
-      let tzLabel = 'CT';
-      if (tz === TZ_MODES.CHICAGO) {
-        const tzPart = new Intl.DateTimeFormat('en-US', {
-          timeZone: tz,
-          timeZoneName: 'short'
-        }).formatToParts(now).find(p => p.type === 'timeZoneName');
-        tzLabel = tzPart ? `${tzPart.value} (CT)` : 'CT';
-      } else {
-        tzLabel = 'CST (UTC-6)';
-      }
-
-      return { hr, min, sec, dateKey, timeStr, dateStr, tzLabel };
-    }
-
-    function getStorageKey() {
-      return `pph_standalone_shift_${getCentralParts().dateKey}`;
-    }
-
-    // ==========================================================================
-    // 2. DEFAULT SHIFT BLOCKS & NOTE SNIPPETS
-    // ==========================================================================
-    const DEFAULT_BLOCKS = [
-      { id: 1, startHour: 6,  label: 'Block 1', time: '6:00 – 7:00 AM',   status: 'active', orders: 0 },
-      { id: 2, startHour: 7,  label: 'Block 2', time: '7:00 – 8:00 AM',   status: 'break',  orders: 0 },
-      { id: 3, startHour: 8,  label: 'Block 3', time: '8:00 – 9:00 AM',   status: 'active', orders: 0 },
-      { id: 4, startHour: 9,  label: 'Block 4', time: '9:00 – 10:00 AM',  status: 'active', orders: 0 },
-      { id: 5, startHour: 10, label: 'Block 5', time: '10:00 – 11:00 AM', status: 'active', orders: 0 },
-      { id: 6, startHour: 11, label: 'Block 6', time: '11:00 – 12:00 PM', status: 'lunch',  orders: 0 },
-      { id: 7, startHour: 12, label: 'Block 7', time: '12:00 – 1:00 PM',  status: 'break',  orders: 0 },
-      { id: 8, startHour: 13, label: 'Block 8', time: '1:00 – 2:00 PM',   status: 'active', orders: 0 },
-      { id: 9, startHour: 14, label: 'Block 9', time: '2:00 – 3:00 PM',   status: 'active', orders: 0 }
+    const BLOCK_DEFS = [
+      { id: 1, startHour: 6,  label: 'Block 1', time: '6:00 – 7:00 AM',   defaultStatus: 'active' },
+      { id: 2, startHour: 7,  label: 'Block 2', time: '7:00 – 8:00 AM',   defaultStatus: 'break'  },
+      { id: 3, startHour: 8,  label: 'Block 3', time: '8:00 – 9:00 AM',   defaultStatus: 'active' },
+      { id: 4, startHour: 9,  label: 'Block 4', time: '9:00 – 10:00 AM',  defaultStatus: 'active' },
+      { id: 5, startHour: 10, label: 'Block 5', time: '10:00 – 11:00 AM', defaultStatus: 'active' },
+      { id: 6, startHour: 11, label: 'Block 6', time: '11:00 – 12:00 PM', defaultStatus: 'lunch'  },
+      { id: 7, startHour: 12, label: 'Block 7', time: '12:00 – 1:00 PM',  defaultStatus: 'break'  },
+      { id: 8, startHour: 13, label: 'Block 8', time: '1:00 – 2:00 PM',   defaultStatus: 'active' },
+      { id: 9, startHour: 14, label: 'Block 9', time: '2:00 – 3:00 PM',   defaultStatus: 'active' }
     ];
+
+    const STATUS_CYCLE = ['active', 'break', 'lunch'];
+    const STATUS_LABELS = {
+      active: 'Active Queue',
+      break: '+15m Break',
+      lunch: '1-Hr Lunch'
+    };
 
     const DEFAULT_SNIPPETS = [
       {
@@ -1675,31 +1769,230 @@
       }
     ];
 
-    let activeStorageKey = getStorageKey();
-    let state = {
-      blocks: JSON.parse(JSON.stringify(DEFAULT_BLOCKS)),
-      activeBlockId: 1,
+    let prefs = {
+      tzMode: TZ_MODES.CHICAGO,
       autoSync: true,
       chimeEnabled: true,
-      lastChimeHour: null,
-      snippets: JSON.parse(JSON.stringify(DEFAULT_SNIPPETS))
+      lastChimeKey: ''
     };
 
+    let currentTab = 'today';
+    let selectedWeekKey = 'current';
+    let expandedDates = new Set();
+
+    let todayDateKey = '';
+    let todayRecord = null;
+    let activeBlockId = 1;
+    let snippets = [];
+
+    // Timer state
     let timerSeconds = 0;
     let timerInterval = null;
     let timerRunning = false;
     let cutoffNotified = false;
 
-    // ==========================================================================
-    // 3. LIVE SHIFT CALCULATIONS
-    // ==========================================================================
+    function getCentralParts(now = new Date(), tz = prefs.tzMode) {
+      const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      });
+      const map = {};
+      for (const p of fmt.formatToParts(now)) {
+        if (p.type !== 'literal') map[p.type] = p.value;
+      }
+      let hr = parseInt(map.hour, 10);
+      if (hr === 24) hr = 0;
+      const min = parseInt(map.minute, 10);
+      const sec = parseInt(map.second, 10);
+      const dateKey = `${map.year}-${map.month}-${map.day}`;
+
+      const timeStr = now.toLocaleTimeString('en-US', {
+        timeZone: tz,
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
+      const dateStr = now.toLocaleDateString('en-US', {
+        timeZone: tz,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      let tzLabel = 'CT';
+      if (tz === TZ_MODES.CHICAGO) {
+        const tzPart = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          timeZoneName: 'short'
+        }).formatToParts(now).find(p => p.type === 'timeZoneName');
+        tzLabel = tzPart ? tzPart.value : 'CT';
+      } else {
+        tzLabel = 'CST (UTC-6)';
+      }
+
+      return { hr, min, sec, dateKey, timeStr, dateStr, tzLabel };
+    }
+
+    function createBlankDayRecord(dateKey) {
+      return {
+        dateKey,
+        contextNote: '',
+        blocks: BLOCK_DEFS.map(d => ({
+          id: d.id,
+          status: d.defaultStatus,
+          orders: 0
+        }))
+      };
+    }
+
+    /* ==========================================================================
+       2. LOCALSTORAGE MANAGEMENT
+       ========================================================================== */
+    function loadPrefs() {
+      try {
+        const raw = localStorage.getItem(PREFS_KEY);
+        if (raw) prefs = { ...prefs, ...JSON.parse(raw) };
+      } catch (_) {}
+    }
+
+    function savePrefs() {
+      try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (_) {}
+    }
+
+    function loadSnippets() {
+      try {
+        const raw = localStorage.getItem(SNIPPETS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            snippets = parsed;
+            return;
+          }
+        }
+      } catch (_) {}
+      snippets = JSON.parse(JSON.stringify(DEFAULT_SNIPPETS));
+    }
+
+    function saveSnippets() {
+      try { localStorage.setItem(SNIPPETS_KEY, JSON.stringify(snippets)); } catch (_) {}
+    }
+
+    function loadDayRecord(dateKey) {
+      try {
+        const raw = localStorage.getItem(STORAGE_PREFIX + dateKey);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.blocks) && parsed.blocks.length === 9) {
+            return {
+              dateKey,
+              contextNote: parsed.contextNote || '',
+              blocks: parsed.blocks.map((b, i) => ({
+                id: i + 1,
+                status: b.status || BLOCK_DEFS[i].defaultStatus,
+                orders: Math.max(0, Number(b.orders) || 0)
+              }))
+            };
+          }
+        }
+      } catch (_) {}
+      return createBlankDayRecord(dateKey);
+    }
+
+    function saveDayRecord(record) {
+      try {
+        localStorage.setItem(STORAGE_PREFIX + record.dateKey, JSON.stringify(record));
+      } catch (e) {
+        console.error('Save failed:', e);
+      }
+    }
+
+    function getAllSavedDays() {
+      const days = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(STORAGE_PREFIX) && /^\d{4}-\d{2}-\d{2}$/.test(key.slice(STORAGE_PREFIX.length))) {
+          const dk = key.slice(STORAGE_PREFIX.length);
+          const rec = loadDayRecord(dk);
+          days.push(rec);
+        }
+      }
+      days.sort((a, b) => b.dateKey.localeCompare(a.dateKey));
+      return days;
+    }
+
+    /* ==========================================================================
+       3. DATE & WEEK MATH (MONDAY – SUNDAY)
+       ========================================================================== */
+    function parseDateKeyUTC(dateKey) {
+      const [y, m, d] = dateKey.split('-').map(Number);
+      return new Date(Date.UTC(y, m - 1, d));
+    }
+
+    function formatDateKeyUTC(dt) {
+      const y = dt.getUTCFullYear();
+      const m = String(dt.getUTCMonth() + 1).padStart(2, '0');
+      const d = String(dt.getUTCDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function getMondayOfWeek(dateKey) {
+      const dt = parseDateKeyUTC(dateKey);
+      const day = dt.getUTCDay(); // 0=Sun, 1=Mon...
+      const diff = day === 0 ? -6 : 1 - day;
+      dt.setUTCDate(dt.getUTCDate() + diff);
+      return formatDateKeyUTC(dt);
+    }
+
+    function formatWeekLabel(mondayKey) {
+      const mon = parseDateKeyUTC(mondayKey);
+      const sun = new Date(mon.getTime());
+      sun.setUTCDate(sun.getUTCDate() + 6);
+      const opts = { timeZone: 'UTC', month: 'short', day: 'numeric' };
+      const monStr = mon.toLocaleDateString('en-US', opts);
+      const sunStr = sun.toLocaleDateString('en-US', { ...opts, year: 'numeric' });
+      const currentMon = getMondayOfWeek(todayDateKey);
+      const prefix = mondayKey === currentMon ? 'Current Week • ' : '';
+      return `${prefix}${monStr} – ${sunStr}`;
+    }
+
+    function formatDayDisplay(dateKey) {
+      const dt = parseDateKeyUTC(dateKey);
+      const weekday = dt.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'short' });
+      const niceDate = dt.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' });
+      return { weekday, niceDate };
+    }
+
+    function computeDayStats(rec) {
+      let totalOrders = 0;
+      let activeHours = 0;
+      rec.blocks.forEach(b => {
+        totalOrders += Number(b.orders) || 0;
+        if (b.status !== 'lunch') activeHours += 1;
+      });
+      const avgPph = activeHours > 0 ? totalOrders / activeHours : 0;
+      const targetMin = activeHours * 12;
+      const targetMet = totalOrders >= targetMin && activeHours > 0;
+      return { totalOrders, activeHours, avgPph, targetMin, targetMet };
+    }
+
+    /* ==========================================================================
+       4. LIVE SHIFT INFO
+       ========================================================================== */
     function getLiveShiftInfo(now = new Date()) {
-      const ct = getCentralParts(now, currentTzMode);
+      const ct = getCentralParts(now, prefs.tzMode);
       const { hr, min, sec } = ct;
 
       let phase = 'live';
       let liveBlockId = 1;
-
       if (hr < 6) {
         phase = 'pre';
         liveBlockId = 1;
@@ -1717,9 +2010,8 @@
       let elapsedActiveHours = 0;
       let remainingActiveHours = 0;
 
-      state.blocks.forEach((b) => {
+      todayRecord.blocks.forEach(b => {
         if (b.status === 'lunch') return;
-
         if (phase === 'pre') {
           remainingActiveHours += 1;
         } else if (phase === 'post') {
@@ -1737,65 +2029,15 @@
       });
 
       return {
-        ct,
-        hr,
-        min,
-        sec,
-        phase,
-        liveBlockId,
-        currentHourFraction,
-        secondsLeftInHour,
-        elapsedActiveHours,
-        remainingActiveHours
+        ct, hr, min, sec, phase, liveBlockId,
+        currentHourFraction, secondsLeftInHour,
+        elapsedActiveHours, remainingActiveHours
       };
     }
 
-    // ==========================================================================
-    // 4. LOCALSTORAGE PERSISTENCE
-    // ==========================================================================
-    function loadState() {
-      activeStorageKey = getStorageKey();
-      try {
-        const saved = localStorage.getItem(activeStorageKey);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed && Array.isArray(parsed.blocks) && parsed.blocks.length === 9) {
-            state = { ...state, ...parsed };
-          }
-        } else {
-          state.blocks = JSON.parse(JSON.stringify(DEFAULT_BLOCKS));
-        }
-
-        const savedSnips = localStorage.getItem(SNIPPETS_KEY);
-        if (savedSnips) {
-          const parsedSnips = JSON.parse(savedSnips);
-          if (Array.isArray(parsedSnips) && parsedSnips.length > 0) {
-            state.snippets = parsedSnips;
-          }
-        }
-      } catch (err) {
-        console.error('LocalStorage load warning:', err);
-      }
-
-      if (state.autoSync) {
-        state.activeBlockId = getLiveShiftInfo().liveBlockId;
-      }
-    }
-
-    function saveState() {
-      activeStorageKey = getStorageKey();
-      try {
-        const { snippets, ...shiftOnly } = state;
-        localStorage.setItem(activeStorageKey, JSON.stringify(shiftOnly));
-        localStorage.setItem(SNIPPETS_KEY, JSON.stringify(snippets));
-      } catch (err) {
-        console.error('LocalStorage save warning:', err);
-      }
-    }
-
-    // ==========================================================================
-    // 5. CHIME, TOASTS & MODALS
-    // ==========================================================================
+    /* ==========================================================================
+       5. AUDIO CHIME, TOASTS & MODALS
+       ========================================================================== */
     function playChime() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1806,7 +2048,7 @@
         osc.type = 'sine';
         osc.frequency.setValueAtTime(587.33, ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.16);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.setValueAtTime(0.11, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -1815,73 +2057,93 @@
       } catch (_) {}
     }
 
-    function showToast(message, tone = 'info') {
-      const container = document.getElementById('toast-container');
+    function showToast(msg, tone = 'info') {
+      const wrap = document.getElementById('toast-container');
       const el = document.createElement('div');
       el.className = `toast-item ${tone}`;
-      el.textContent = message;
-      container.appendChild(el);
+      el.textContent = msg;
+      wrap.appendChild(el);
       setTimeout(() => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(8px)';
         setTimeout(() => el.remove(), 260);
-      }, 3100);
+      }, 2800);
     }
 
-    function openConfirmModal(title, message, onConfirm) {
+    function openConfirm(title, message, onConfirm) {
       const modal = document.getElementById('confirm-modal');
       document.getElementById('confirm-title').textContent = title;
       document.getElementById('confirm-message').textContent = message;
       modal.classList.remove('hidden');
 
-      const cleanup = () => {
-        modal.classList.add('hidden');
-        okBtn.removeEventListener('click', handleOk);
-        cancelBtn.removeEventListener('click', cleanup);
-      };
-      const handleOk = () => {
-        cleanup();
-        onConfirm();
-      };
       const okBtn = document.getElementById('confirm-ok');
       const cancelBtn = document.getElementById('confirm-cancel');
+      const close = () => {
+        modal.classList.add('hidden');
+        okBtn.removeEventListener('click', handleOk);
+        cancelBtn.removeEventListener('click', close);
+      };
+      const handleOk = () => { close(); onConfirm(); };
       okBtn.addEventListener('click', handleOk);
-      cancelBtn.addEventListener('click', cleanup);
+      cancelBtn.addEventListener('click', close);
     }
 
-    // ==========================================================================
-    // 6. 4-MINUTE INVESTIGATION TIMER
-    // ==========================================================================
+    function copyText(text, chipEl) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        if (chipEl) {
+          chipEl.textContent = 'Copied!';
+          chipEl.classList.add('copied');
+          setTimeout(() => {
+            chipEl.textContent = 'Tap to Copy';
+            chipEl.classList.remove('copied');
+          }, 1300);
+        }
+        showToast('Note copied to clipboard!', 'success');
+      } catch (_) {
+        showToast('Copy failed. Please copy manually.', 'warning');
+      }
+      document.body.removeChild(ta);
+    }
+
+    /* ==========================================================================
+       6. 4-MINUTE INVESTIGATION CUTOFF TIMER
+       ========================================================================== */
     function updateTimerUI() {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
-      const display = document.getElementById('timer-display');
-      const bar = document.getElementById('timer-progress-bar');
-      const statusText = document.getElementById('timer-status-text');
-      const card = document.getElementById('timer-card');
+      const clock = document.getElementById('timer-clock');
+      const bar = document.getElementById('timer-bar');
+      const status = document.getElementById('timer-status');
+      const box = document.getElementById('timer-box');
 
-      display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      const pct = Math.min(100, (timerSeconds / 240) * 100);
-      bar.style.width = `${pct}%`;
+      clock.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      bar.style.width = `${Math.min(100, (timerSeconds / 240) * 100)}%`;
 
       if (timerSeconds >= 240) {
-        display.className = 'timer-clock rose';
-        bar.style.backgroundColor = '#f43f5e';
-        statusText.className = 'timer-status rose';
-        statusText.textContent = '4:00 CUTOFF REACHED • Verify, Deny, or Escalate!';
-        card.classList.add('cutoff-alert');
+        clock.className = 'timer-clock rose';
+        bar.style.background = '#f43f5e';
+        status.className = 'timer-status rose';
+        status.textContent = '4:00 CUTOFF REACHED • Decide or Escalate!';
+        box.classList.add('cutoff-alert');
       } else if (timerSeconds >= 180) {
-        display.className = 'timer-clock amber';
-        bar.style.backgroundColor = '#f59e0b';
-        statusText.className = 'timer-status amber';
-        statusText.textContent = '3:00+ • Wrap up investigation & log notes';
-        card.classList.remove('cutoff-alert');
+        clock.className = 'timer-clock amber';
+        bar.style.background = '#f59e0b';
+        status.className = 'timer-status amber';
+        status.textContent = '3:00+ • Wrap up investigation & log notes';
+        box.classList.remove('cutoff-alert');
       } else {
-        display.className = 'timer-clock';
-        bar.style.backgroundColor = '#10b981';
-        statusText.className = 'timer-status';
-        statusText.textContent = 'Target: Under 3:00 • Cutoff: 4:00';
-        card.classList.remove('cutoff-alert');
+        clock.className = 'timer-clock';
+        bar.style.background = 'linear-gradient(90deg, #10b981, #38bdf8)';
+        status.className = 'timer-status';
+        status.textContent = 'Target: < 3:00 • Cutoff: 4:00';
+        box.classList.remove('cutoff-alert');
       }
     }
 
@@ -1895,7 +2157,7 @@
         if (timerSeconds === 240 && !cutoffNotified) {
           cutoffNotified = true;
           playChime();
-          showToast('4:00 Investigation Cutoff reached! Decide or escalate now.', 'warning');
+          showToast('4:00 Investigation Cutoff reached!', 'warning');
         }
       }, 1000);
     }
@@ -1915,533 +2177,835 @@
       if (autoStart) startTimer();
     }
 
-    // ==========================================================================
-    // 7. RENDERING SCHEDULE TABLE, KPIS & SNIPPETS
-    // ==========================================================================
-    const STATUS_CYCLE = ['active', 'break', 'lunch'];
-    const STATUS_LABELS = {
-      active: 'Active Queue',
-      break: '+15m Break',
-      lunch: '1-Hr Lunch'
-    };
-
-    function renderAll() {
-      const tbody = document.getElementById('shift-table-body');
+    /* ==========================================================================
+       7. RENDER TODAY TAB
+       ========================================================================== */
+    function renderToday() {
+      const liveInfo = getLiveShiftInfo();
+      const tbody = document.getElementById('shift-tbody');
       tbody.innerHTML = '';
 
-      const liveInfo = getLiveShiftInfo();
-      let cumulativeOrders = 0;
-      let activeBlocksCount = 0;
+      let cumul = 0;
+      let paidHrs = 0;
 
-      state.blocks.forEach((block) => {
-        const isLunch = block.status === 'lunch';
-        const isSelected = block.id === state.activeBlockId;
-        const isLive = liveInfo.phase === 'live' && block.id === liveInfo.liveBlockId;
-        const orders = Number(block.orders) || 0;
+      todayRecord.blocks.forEach((b, idx) => {
+        const def = BLOCK_DEFS[idx];
+        const isLunch = b.status === 'lunch';
+        const isSel = b.id === activeBlockId;
+        const isLive = liveInfo.phase === 'live' && b.id === liveInfo.liveBlockId;
+        const orders = Number(b.orders) || 0;
 
-        cumulativeOrders += orders;
-        if (!isLunch) activeBlocksCount++;
+        cumul += orders;
+        if (!isLunch) paidHrs++;
 
-        const targetMinCum = activeBlocksCount * 12;
-        const targetMaxCum = activeBlocksCount * 15;
-
-        let paceBadge = '';
+        let paceHtml = '';
         if (isLunch) {
-          paceBadge = `<span class="pace-pill amber">Lunch</span>`;
+          paceHtml = `<span class="pill amber">Lunch</span>`;
         } else if (isLive) {
-          const proratedMin = Math.floor(12 * liveInfo.currentHourFraction);
-          if (orders >= 15) {
-            paceBadge = `<span class="pace-pill emerald">Ahead 15+</span>`;
-          } else if (orders >= proratedMin) {
-            paceBadge = `<span class="pace-pill indigo">On Track</span>`;
-          } else {
-            paceBadge = `<span class="pace-pill amber">In Progress</span>`;
-          }
-        } else if (liveInfo.phase === 'pre' || (liveInfo.phase === 'live' && block.id > liveInfo.liveBlockId && orders === 0)) {
-          paceBadge = `<span class="pace-pill slate">Upcoming</span>`;
+          const prorated = Math.floor(12 * liveInfo.currentHourFraction);
+          if (orders >= 15) paceHtml = `<span class="pill emerald">Ahead 15+</span>`;
+          else if (orders >= prorated) paceHtml = `<span class="pill sky">On Track</span>`;
+          else paceHtml = `<span class="pill amber">In Progress</span>`;
+        } else if (liveInfo.phase === 'pre' || (liveInfo.phase === 'live' && b.id > liveInfo.liveBlockId && orders === 0)) {
+          paceHtml = `<span class="pill">Upcoming</span>`;
         } else if (orders >= 15) {
-          paceBadge = `<span class="pace-pill emerald">Ahead 15+</span>`;
+          paceHtml = `<span class="pill emerald">Ahead 15+</span>`;
         } else if (orders >= 12) {
-          paceBadge = `<span class="pace-pill indigo">On Track 12–15</span>`;
+          paceHtml = `<span class="pill sky">On Track</span>`;
         } else {
-          paceBadge = `<span class="pace-pill rose">Behind &lt;12</span>`;
+          paceHtml = `<span class="pill rose">Behind &lt;12</span>`;
         }
 
         const tr = document.createElement('tr');
-        if (isSelected) tr.classList.add('row-selected');
+        if (isSel) tr.classList.add('row-selected');
         else if (isLunch) tr.classList.add('row-lunch');
 
         tr.innerHTML = `
           <td>
             <div class="block-cell">
-              <span class="sel-dot ${isSelected ? 'active' : ''}"></span>
+              <span class="sel-dot ${isSel ? 'active' : ''}"></span>
               <div>
-                <div class="block-name-row">
-                  <span class="block-name">${block.label}</span>
-                  ${isLive ? '<span class="tag-live">LIVE</span>' : ''}
-                  ${isSelected && !isLive ? '<span class="tag-selected">Active</span>' : ''}
+                <div class="block-title-row">
+                  <span class="block-name">${def.label}</span>
+                  ${isLive ? '<span class="tag-live">LIVE NOW</span>' : ''}
                 </div>
-                <div class="block-time">${block.time} CT</div>
+                <div class="block-time">${def.time}</div>
               </div>
             </div>
           </td>
           <td onclick="event.stopPropagation()">
-            <button type="button" data-cycle-id="${block.id}" class="type-cycle-btn ${block.status}" title="Tap to switch Active Queue, +15m Break, or 1-Hr Lunch">
-              ${STATUS_LABELS[block.status] || 'Active Queue'}
+            <button type="button" data-cycle="${b.id}" class="type-pill-btn ${b.status}">
+              ${STATUS_LABELS[b.status] || 'Active Queue'}
             </button>
           </td>
           <td style="text-align:center;" onclick="event.stopPropagation()">
-            <div class="stepper-wrap">
-              <button type="button" data-step="dec" data-id="${block.id}" class="step-btn">−</button>
+            <div class="stepper">
+              <button type="button" data-step="dec" data-id="${b.id}" class="step-btn">−</button>
               <span class="step-val">${orders}</span>
-              <button type="button" data-step="inc" data-id="${block.id}" class="step-btn inc">+</button>
+              <button type="button" data-step="inc" data-id="${b.id}" class="step-btn inc">+</button>
             </div>
           </td>
-          <td class="cumul-cell">${cumulativeOrders}</td>
-          <td class="target-cell hide-mobile">${isLunch ? '—' : `${targetMinCum}–${targetMaxCum}`}</td>
-          <td>${paceBadge}</td>
+          <td class="cumul-td">${cumul}</td>
+          <td>${paceHtml}</td>
         `;
 
         tr.addEventListener('click', () => {
-          state.activeBlockId = block.id;
-          if (liveInfo.phase === 'live' && block.id !== liveInfo.liveBlockId && state.autoSync) {
-            state.autoSync = false;
-            showToast(`Auto-Sync paused for manual selection (${block.label}). Tap Auto-Sync to re-enable.`, 'info');
+          activeBlockId = b.id;
+          if (liveInfo.phase === 'live' && b.id !== liveInfo.liveBlockId && prefs.autoSync) {
+            prefs.autoSync = false;
+            savePrefs();
+            showToast(`Auto-Sync paused (${def.label} selected).`, 'info');
           }
-          saveState();
-          renderAll();
+          renderToday();
         });
 
         tbody.appendChild(tr);
       });
 
-      document.querySelectorAll('button[data-cycle-id]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          const id = Number(e.currentTarget.dataset.cycleId);
-          const blk = state.blocks.find(b => b.id === id);
+      tbody.querySelectorAll('button[data-cycle]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const id = Number(e.currentTarget.dataset.cycle);
+          const blk = todayRecord.blocks.find(x => x.id === id);
           if (blk) {
-            const idx = STATUS_CYCLE.indexOf(blk.status);
-            blk.status = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
-            saveState();
-            renderAll();
+            blk.status = STATUS_CYCLE[(STATUS_CYCLE.indexOf(blk.status) + 1) % STATUS_CYCLE.length];
+            saveDayRecord(todayRecord);
+            renderToday();
           }
         });
       });
 
-      document.querySelectorAll('button[data-step]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+      tbody.querySelectorAll('button[data-step]').forEach(btn => {
+        btn.addEventListener('click', e => {
           const id = Number(e.currentTarget.dataset.id);
           const dir = e.currentTarget.dataset.step;
-          const blk = state.blocks.find(b => b.id === id);
+          const blk = todayRecord.blocks.find(x => x.id === id);
           if (blk) {
-            if (dir === 'inc') blk.orders = (Number(blk.orders) || 0) + 1;
-            if (dir === 'dec') blk.orders = Math.max(0, (Number(blk.orders) || 0) - 1);
-            saveState();
-            renderAll();
+            blk.orders = dir === 'inc' ? blk.orders + 1 : Math.max(0, blk.orders - 1);
+            saveDayRecord(todayRecord);
+            renderToday();
           }
         });
       });
 
-      // Update Top 4 KPI Cards
-      const minGoal = activeBlocksCount * 12;
-      const maxGoal = activeBlocksCount * 15;
+      // KPI Strip
+      const minGoal = paidHrs * 12;
+      const maxGoal = paidHrs * 15;
+      const pct = minGoal > 0 ? Math.round((cumul / minGoal) * 100) : 0;
 
-      // 1. Total Completed
-      document.getElementById('kpi-total').textContent = cumulativeOrders;
+      document.getElementById('kpi-total').textContent = cumul;
       document.getElementById('kpi-target-range').textContent = `/ ${minGoal}–${maxGoal}`;
-      const pct = minGoal > 0 ? Math.round((cumulativeOrders / minGoal) * 100) : 0;
       document.getElementById('kpi-goal-pct').textContent = `${pct}% of ${minGoal}`;
       document.getElementById('kpi-progress-bar').style.width = `${Math.min(100, pct)}%`;
 
-      // 2. Real-Time Active PPH
-      const elapsedHrs = liveInfo.elapsedActiveHours;
-      const livePph = elapsedHrs > 0.02 ? (cumulativeOrders / elapsedHrs) : 0;
+      const elapsed = liveInfo.elapsedActiveHours;
+      const livePph = elapsed > 0.02 ? cumul / elapsed : 0;
       document.getElementById('kpi-avg-pph').textContent = livePph.toFixed(1);
-      document.getElementById('kpi-active-hours-sub').textContent = `${elapsedHrs.toFixed(2)} active shift hrs elapsed`;
+      document.getElementById('kpi-elapsed-sub').textContent = `${elapsed.toFixed(2)} active hrs elapsed`;
 
       const pphBadge = document.getElementById('kpi-pph-badge');
-      if (elapsedHrs <= 0.02 && cumulativeOrders === 0) {
-        pphBadge.className = 'kpi-pill';
+      if (elapsed <= 0.02 && cumul === 0) {
+        pphBadge.className = 'pill';
         pphBadge.textContent = 'Pre-Shift';
       } else if (livePph >= 15) {
-        pphBadge.className = 'kpi-pill emerald';
-        pphBadge.textContent = 'Ahead (15+)';
+        pphBadge.className = 'pill emerald';
+        pphBadge.textContent = 'Ahead 15+';
       } else if (livePph >= 12) {
-        pphBadge.className = 'kpi-pill indigo';
+        pphBadge.className = 'pill sky';
         pphBadge.textContent = 'On Target';
       } else {
-        pphBadge.className = 'kpi-pill rose';
+        pphBadge.className = 'pill rose';
         pphBadge.textContent = 'Below 12';
       }
 
-      // 3. Live Pace Buffer
-      const expMin = elapsedHrs * 12;
-      const expMax = elapsedHrs * 15;
-      document.getElementById('kpi-expected-range').textContent = `Exp: ${expMin.toFixed(1)}–${expMax.toFixed(1)}`;
-      const buffer = cumulativeOrders - expMin;
-      const bufferEl = document.getElementById('kpi-buffer');
-      const bufferDesc = document.getElementById('kpi-buffer-desc');
-
-      if (elapsedHrs <= 0.01 && cumulativeOrders === 0) {
-        bufferEl.textContent = '0.0';
-        bufferEl.className = 'kpi-number slate';
-        bufferDesc.textContent = 'Shift begins at 6:00 AM CT';
+      const expMin = elapsed * 12;
+      const buffer = cumul - expMin;
+      document.getElementById('kpi-exp-range').textContent = `Exp: ${expMin.toFixed(1)}`;
+      const bufEl = document.getElementById('kpi-buffer');
+      const bufSub = document.getElementById('kpi-buffer-sub');
+      if (elapsed <= 0.01 && cumul === 0) {
+        bufEl.textContent = '0.0';
+        bufEl.className = 'kpi-num';
+        bufSub.textContent = 'Shift starts 6:00 AM CT';
       } else if (buffer >= 0) {
-        bufferEl.textContent = `+${buffer.toFixed(1)}`;
-        bufferEl.className = 'kpi-number emerald';
-        bufferDesc.textContent = `Ahead of ${expMin.toFixed(1)} prorated 12-PPH pace`;
+        bufEl.textContent = `+${buffer.toFixed(1)}`;
+        bufEl.className = 'kpi-num emerald';
+        bufSub.textContent = `Ahead of 12 PPH pace`;
       } else {
-        bufferEl.textContent = `${buffer.toFixed(1)}`;
-        bufferEl.className = 'kpi-number rose';
-        bufferDesc.textContent = `Behind ${expMin.toFixed(1)} prorated 12-PPH pace`;
+        bufEl.textContent = buffer.toFixed(1);
+        bufEl.className = 'kpi-num rose';
+        bufSub.textContent = `Behind 12 PPH pace`;
       }
 
-      // 4. Required Pace / Hr
-      const remMin = Math.max(0, minGoal - cumulativeOrders);
-      const remMax = Math.max(0, maxGoal - cumulativeOrders);
-      document.getElementById('kpi-rem-120').textContent = `${maxGoal} max: ${remMax} left`;
-      const reqPphEl = document.getElementById('kpi-req-pph');
-      const remDescEl = document.getElementById('kpi-rem-desc');
-
+      const remMin = Math.max(0, minGoal - cumul);
+      const remMax = Math.max(0, maxGoal - cumul);
+      document.getElementById('kpi-rem-max').textContent = `${maxGoal} max: ${remMax}`;
+      const reqEl = document.getElementById('kpi-req-pph');
+      const remSub = document.getElementById('kpi-rem-sub');
       if (remMin === 0) {
-        reqPphEl.textContent = '0.0';
-        reqPphEl.className = 'kpi-number emerald';
-        remDescEl.textContent = `Daily minimum (${minGoal}) achieved!`;
+        reqEl.textContent = '0.0';
+        reqEl.className = 'kpi-num emerald';
+        remSub.textContent = `Daily minimum (${minGoal}) met!`;
       } else if (liveInfo.remainingActiveHours > 0.05) {
-        const reqPace = remMin / liveInfo.remainingActiveHours;
-        reqPphEl.textContent = reqPace.toFixed(1);
-        reqPphEl.className = reqPace > 15 ? 'kpi-number rose' : 'kpi-number indigo';
-        remDescEl.textContent = `${remMin} orders left across ${liveInfo.remainingActiveHours.toFixed(2)} rem. hrs`;
+        const req = remMin / liveInfo.remainingActiveHours;
+        reqEl.textContent = req.toFixed(1);
+        reqEl.className = req > 15 ? 'kpi-num rose' : 'kpi-num sky';
+        remSub.textContent = `${remMin} left across ${liveInfo.remainingActiveHours.toFixed(1)} hrs`;
       } else {
-        reqPphEl.textContent = '—';
-        reqPphEl.className = 'kpi-number rose';
-        remDescEl.textContent = `${remMin} orders short at shift end`;
+        reqEl.textContent = '—';
+        reqEl.className = 'kpi-num rose';
+        remSub.textContent = `${remMin} short at shift end`;
       }
 
-      // Active Action Banner & Footer
-      const selectedBlock = state.blocks.find(b => b.id === state.activeBlockId) || state.blocks[0];
-      document.getElementById('active-block-banner').textContent = `${selectedBlock.label} • ${selectedBlock.time} CT`;
-      document.getElementById('active-block-count-pill').textContent = selectedBlock.orders;
+      // Active Banner & Footer
+      const selDef = BLOCK_DEFS[activeBlockId - 1];
+      const selBlk = todayRecord.blocks[activeBlockId - 1];
+      document.getElementById('active-block-banner').textContent = `${selDef.label} • ${selDef.time} CT`;
+      document.getElementById('active-count-chip').textContent = selBlk.orders;
 
-      document.getElementById('footer-paid-hours').textContent = activeBlocksCount;
-      document.getElementById('footer-total-orders').textContent = cumulativeOrders;
-      document.getElementById('footer-cumulative').textContent = cumulativeOrders;
-      document.getElementById('footer-target-band').textContent = `${minGoal}–${maxGoal}`;
+      document.getElementById('ft-paid-hrs').textContent = paidHrs;
+      document.getElementById('ft-total').textContent = cumul;
+      document.getElementById('ft-cumul').textContent = cumul;
+      document.getElementById('ft-status').innerHTML = cumul >= maxGoal
+        ? `<span style="color:var(--emerald-light)">15+ PPH Hit</span>`
+        : cumul >= minGoal
+          ? `<span style="color:var(--sky)">Goal Met</span>`
+          : `<span style="color:var(--text-sec)">${remMin} to goal</span>`;
 
-      const footerStatus = document.getElementById('footer-overall-status');
-      if (cumulativeOrders >= maxGoal) {
-        footerStatus.innerHTML = `<span style="color:#34d399;">15+ PPH Hit</span>`;
-      } else if (cumulativeOrders >= minGoal) {
-        footerStatus.innerHTML = `<span style="color:#818cf8;">Goal Met</span>`;
-      } else {
-        footerStatus.innerHTML = `<span style="color:#94a3b8;">${remMin} to goal</span>`;
-      }
-
-      // Sync & Chime Button States
-      document.getElementById('autosync-status').textContent = state.autoSync ? 'ON' : 'OFF';
-      const syncBtn = document.getElementById('btn-autosync');
-      if (state.autoSync) {
-        syncBtn.classList.add('btn-sync-on');
-      } else {
-        syncBtn.classList.remove('btn-sync-on');
-      }
-      document.getElementById('chime-status').textContent = state.chimeEnabled ? 'ON' : 'OFF';
+      // Header Toggles
+      document.getElementById('autosync-lbl').textContent = prefs.autoSync ? 'ON' : 'OFF';
+      document.getElementById('btn-autosync').classList.toggle('btn-sync-on', prefs.autoSync);
+      document.getElementById('chime-lbl').textContent = prefs.chimeEnabled ? 'ON' : 'OFF';
+      document.getElementById('btn-chime').classList.toggle('btn-chime-on', prefs.chimeEnabled);
     }
 
     function renderSnippets() {
       const list = document.getElementById('snippets-list');
       list.innerHTML = '';
-
-      state.snippets.forEach((snip) => {
+      snippets.forEach(s => {
         const card = document.createElement('div');
-        card.className = `snip-card ${snip.type || 'neutral'}`;
+        card.className = `snip-card ${s.type || 'neutral'}`;
         card.innerHTML = `
           <div class="snip-top">
-            <span class="snip-tag ${snip.type || 'neutral'}">${snip.tag}</span>
-            <div class="snip-controls">
-              <span class="copy-pill">Tap to Copy</span>
-              <button type="button" data-del-snip="${snip.id}" class="btn-del-snip" title="Delete snippet">✕</button>
+            <span class="snip-tag ${s.type || 'neutral'}">${s.tag}</span>
+            <div class="snip-right">
+              <span class="copy-chip">Tap to Copy</span>
+              <button type="button" data-del="${s.id}" class="btn-del-snip" title="Delete">✕</button>
             </div>
           </div>
-          <p class="snip-body">${snip.text}</p>
+          <p class="snip-text">${s.text}</p>
         `;
-
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('button[data-del-snip]')) return;
-          copyText(snip.text, card.querySelector('.copy-pill'));
+        card.addEventListener('click', e => {
+          if (e.target.closest('button[data-del]')) return;
+          copyText(s.text, card.querySelector('.copy-chip'));
         });
-
         list.appendChild(card);
       });
 
-      document.querySelectorAll('button[data-del-snip]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+      list.querySelectorAll('button[data-del]').forEach(btn => {
+        btn.addEventListener('click', e => {
           e.stopPropagation();
-          const id = e.currentTarget.dataset.delSnip;
-          state.snippets = state.snippets.filter(s => s.id !== id);
-          saveState();
+          const id = e.currentTarget.dataset.del;
+          snippets = snippets.filter(x => x.id !== id);
+          saveSnippets();
           renderSnippets();
           showToast('Snippet removed.');
         });
       });
     }
 
-    function copyText(text, badgeEl) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand('copy');
-        if (badgeEl) {
-          badgeEl.textContent = 'Copied!';
-          badgeEl.classList.add('copied');
-          setTimeout(() => {
-            badgeEl.textContent = 'Tap to Copy';
-            badgeEl.classList.remove('copied');
-          }, 1400);
-        }
-        showToast('Copied note to clipboard!', 'success');
-      } catch (_) {
-        showToast('Could not copy automatically.', 'warning');
+    /* ==========================================================================
+       8. RENDER WEEKLY LOG TAB
+       ========================================================================== */
+    function renderWeeklyLog() {
+      const allDays = getAllSavedDays();
+      const currentMon = getMondayOfWeek(todayDateKey);
+
+      // Show subtle Load Demo Week button only when history has < 2 days
+      const demoBtn = document.getElementById('btn-load-demo');
+      demoBtn.classList.toggle('hidden', allDays.length >= 2);
+
+      // Group weeks (Monday-Sunday)
+      const weekMap = new Map();
+      weekMap.set(currentMon, []);
+      allDays.forEach(d => {
+        const mon = getMondayOfWeek(d.dateKey);
+        if (!weekMap.has(mon)) weekMap.set(mon, []);
+        weekMap.get(mon).push(d);
+      });
+
+      const sortedWeeks = Array.from(weekMap.keys()).sort((a, b) => b.localeCompare(a));
+
+      // Populate week selector
+      const sel = document.getElementById('week-selector');
+      if (selectedWeekKey !== 'all' && !weekMap.has(selectedWeekKey)) {
+        selectedWeekKey = currentMon;
       }
-      document.body.removeChild(textarea);
+      sel.innerHTML = '';
+      sortedWeeks.forEach(mon => {
+        const opt = document.createElement('option');
+        opt.value = mon;
+        opt.textContent = formatWeekLabel(mon);
+        if (selectedWeekKey === mon || (selectedWeekKey === 'current' && mon === currentMon)) {
+          opt.selected = true;
+          selectedWeekKey = mon;
+        }
+        sel.appendChild(opt);
+      });
+      const allOpt = document.createElement('option');
+      allOpt.value = 'all';
+      allOpt.textContent = `All History (${allDays.length} ${allDays.length === 1 ? 'shift' : 'shifts'})`;
+      if (selectedWeekKey === 'all') allOpt.selected = true;
+      sel.appendChild(allOpt);
+
+      // Filter days for selected week
+      const filteredDays = selectedWeekKey === 'all'
+        ? allDays
+        : (weekMap.get(selectedWeekKey) || []);
+
+      // Compute Weekly Summary KPIs
+      let wkOrders = 0;
+      let wkActiveHrs = 0;
+      let wkDaysHit = 0;
+      filteredDays.forEach(d => {
+        const st = computeDayStats(d);
+        wkOrders += st.totalOrders;
+        wkActiveHrs += st.activeHours;
+        if (st.targetMet) wkDaysHit++;
+      });
+      const wkAvgPph = wkActiveHrs > 0 ? wkOrders / wkActiveHrs : 0;
+      const hitPct = filteredDays.length > 0 ? Math.round((wkDaysHit / filteredDays.length) * 100) : 0;
+
+      document.getElementById('wk-days-count').textContent = `${filteredDays.length} ${filteredDays.length === 1 ? 'shift' : 'shifts'}`;
+      document.getElementById('wk-total-orders').textContent = wkOrders;
+      document.getElementById('wk-avg-pph').textContent = wkAvgPph.toFixed(1);
+      document.getElementById('wk-hours-sub').textContent = `${wkActiveHrs} active hours logged`;
+      document.getElementById('wk-days-hit').textContent = `${wkDaysHit} / ${filteredDays.length}`;
+      document.getElementById('wk-hit-rate').textContent = `${hitPct}%`;
+
+      const wkPphPill = document.getElementById('wk-pph-pill');
+      if (wkActiveHrs === 0) {
+        wkPphPill.className = 'pill';
+        wkPphPill.textContent = 'Target 12–15';
+      } else if (wkAvgPph >= 15) {
+        wkPphPill.className = 'pill emerald';
+        wkPphPill.textContent = 'Ahead 15+';
+      } else if (wkAvgPph >= 12) {
+        wkPphPill.className = 'pill sky';
+        wkPphPill.textContent = 'On Target';
+      } else {
+        wkPphPill.className = 'pill rose';
+        wkPphPill.textContent = 'Below 12';
+      }
+
+      // Render Hourly Trend Insight (across ALL saved days with >= 1 active hour & > 0 orders)
+      const validTrendDays = allDays.filter(d => computeDayStats(d).totalOrders > 0);
+      document.getElementById('trend-sample-pill').textContent = `${validTrendDays.length} ${validTrendDays.length === 1 ? 'shift' : 'shifts'}`;
+
+      const blockTotals = Array(9).fill(0);
+      const blockCounts = Array(9).fill(0);
+      validTrendDays.forEach(d => {
+        d.blocks.forEach((b, i) => {
+          if (b.status !== 'lunch') {
+            blockTotals[i] += Number(b.orders) || 0;
+            blockCounts[i] += 1;
+          }
+        });
+      });
+
+      const blockAvgs = blockTotals.map((tot, i) => ({
+        idx: i,
+        def: BLOCK_DEFS[i],
+        avg: blockCounts[i] > 0 ? tot / blockCounts[i] : 0,
+        samples: blockCounts[i]
+      }));
+
+      const activeAvgs = blockAvgs.filter(x => x.samples > 0);
+      const barsEl = document.getElementById('trend-bars');
+      barsEl.innerHTML = '';
+
+      if (activeAvgs.length === 0) {
+        document.getElementById('trend-strong-lbl').textContent = 'No shift data yet';
+        document.getElementById('trend-strong-val').textContent = '—';
+        document.getElementById('trend-slow-lbl').textContent = 'No shift data yet';
+        document.getElementById('trend-slow-val').textContent = '—';
+        barsEl.innerHTML = `<p style="margin:6px 0 0 0;font-size:12.5px;color:var(--text-sec);">Log orders on the Today tab to unlock hourly pace trends.</p>`;
+      } else {
+        let strongest = activeAvgs[0];
+        let slowest = activeAvgs[0];
+        let maxAvg = 15;
+        activeAvgs.forEach(x => {
+          if (x.avg > strongest.avg) strongest = x;
+          if (x.avg < slowest.avg) slowest = x;
+          if (x.avg > maxAvg) maxAvg = x.avg;
+        });
+
+        document.getElementById('trend-strong-lbl').textContent = `${strongest.def.label} (${strongest.def.time})`;
+        document.getElementById('trend-strong-val').textContent = `${strongest.avg.toFixed(1)} /hr`;
+        document.getElementById('trend-slow-lbl').textContent = `${slowest.def.label} (${slowest.def.time})`;
+        document.getElementById('trend-slow-val').textContent = `${slowest.avg.toFixed(1)} /hr`;
+
+        blockAvgs.forEach(item => {
+          const widthPct = item.samples > 0 ? Math.min(100, (item.avg / maxAvg) * 100) : 0;
+          const cls = item.samples === 0 ? '' : (item.idx === strongest.idx ? 'strong' : (item.idx === slowest.idx ? 'slow' : ''));
+          const row = document.createElement('div');
+          row.className = 'trend-row';
+          row.innerHTML = `
+            <div class="trend-block-lbl"><strong>${item.def.label}</strong> ${item.def.time.split('–')[0].trim()}</div>
+            <div class="trend-bar-track">
+              <div class="trend-bar-fill ${cls}" style="width:${widthPct}%"></div>
+            </div>
+            <div class="trend-avg-val">${item.samples > 0 ? item.avg.toFixed(1) : '—'}</div>
+          `;
+          barsEl.appendChild(row);
+        });
+      }
+
+      // Render Expandable Daily Breakdown
+      const listEl = document.getElementById('weekly-day-list');
+      listEl.innerHTML = '';
+
+      if (filteredDays.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <h3>No shifts logged for this week yet</h3>
+            <p>Your daily order counts, lunch blocks, and context notes auto-save every day in U.S. Central Time. Log orders on the Today tab or load a sample week to preview.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredDays.forEach(rec => {
+        const st = computeDayStats(rec);
+        const { weekday, niceDate } = formatDayDisplay(rec.dateKey);
+        const isExpanded = expandedDates.has(rec.dateKey);
+        const isToday = rec.dateKey === todayDateKey;
+
+        const targetPill = st.totalOrders >= st.activeHours * 15
+          ? `<span class="pill emerald">15+ PPH</span>`
+          : st.targetMet
+            ? `<span class="pill sky">Target Met</span>`
+            : `<span class="pill rose">Below 96</span>`;
+
+        const card = document.createElement('div');
+        card.className = `day-card ${isExpanded ? 'expanded' : ''}`;
+
+        const blocksHtml = rec.blocks.map((b, i) => {
+          const def = BLOCK_DEFS[i];
+          const isLunch = b.status === 'lunch';
+          return `
+            <div class="hist-block-item">
+              <div class="hist-block-info">
+                <span class="block-name" style="font-size:13px;">${def.label} ${isLunch ? '<span class="pill amber" style="margin-left:4px;">Lunch</span>' : ''}</span>
+                <span class="block-time">${def.time}</span>
+              </div>
+              <div class="stepper">
+                <button type="button" data-hstep="dec" data-date="${rec.dateKey}" data-bid="${b.id}" class="step-btn" style="width:40px;height:40px;">−</button>
+                <span class="step-val" style="font-size:14px;">${b.orders}</span>
+                <button type="button" data-hstep="inc" data-date="${rec.dateKey}" data-bid="${b.id}" class="step-btn inc" style="width:40px;height:40px;">+</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <button type="button" class="day-summary-btn" data-toggle-day="${rec.dateKey}">
+            <div class="day-left">
+              <div class="day-date-row">
+                <span class="day-date-title">${weekday}, ${niceDate}</span>
+                ${isToday ? '<span class="tag-live">TODAY</span>' : ''}
+                ${targetPill}
+              </div>
+              <div class="day-note-preview">${rec.contextNote ? `"${rec.contextNote}"` : 'No context note'}</div>
+            </div>
+            <div class="day-right">
+              <div class="day-stat">
+                <div class="day-stat-num">${st.totalOrders}</div>
+                <div class="day-stat-lbl">Orders</div>
+              </div>
+              <div class="day-stat">
+                <div class="day-stat-num" style="color:var(--sky);">${st.avgPph.toFixed(1)}</div>
+                <div class="day-stat-lbl">Avg PPH</div>
+              </div>
+              <svg class="chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </button>
+          <div class="day-detail">
+            <div class="day-blocks-grid">${blocksHtml}</div>
+            <div class="context-note-wrap" style="margin-bottom:0;">
+              <label class="field-label">Context Note for ${weekday}, ${niceDate}</label>
+              <input type="text" class="text-input" data-hnote="${rec.dateKey}" value="${(rec.contextNote || '').replace(/"/g, '&quot;')}" placeholder="Add shift note (e.g., system lag, complex orders)..." />
+            </div>
+          </div>
+        `;
+
+        listEl.appendChild(card);
+      });
+
+      // Expand/Collapse listeners
+      listEl.querySelectorAll('button[data-toggle-day]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const dk = e.currentTarget.dataset.toggleDay;
+          if (expandedDates.has(dk)) expandedDates.delete(dk);
+          else expandedDates.add(dk);
+          renderWeeklyLog();
+        });
+      });
+
+      // Inline historical stepper listeners
+      listEl.querySelectorAll('button[data-hstep]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const dk = e.currentTarget.dataset.date;
+          const bid = Number(e.currentTarget.dataset.bid);
+          const dir = e.currentTarget.dataset.hstep;
+          const rec = dk === todayDateKey ? todayRecord : loadDayRecord(dk);
+          const blk = rec.blocks.find(b => b.id === bid);
+          if (blk) {
+            blk.orders = dir === 'inc' ? blk.orders + 1 : Math.max(0, blk.orders - 1);
+            saveDayRecord(rec);
+            if (dk === todayDateKey) renderToday();
+            renderWeeklyLog();
+          }
+        });
+      });
+
+      // Inline historical context note listeners
+      listEl.querySelectorAll('input[data-hnote]').forEach(inp => {
+        inp.addEventListener('input', e => {
+          const dk = e.currentTarget.dataset.hnote;
+          const rec = dk === todayDateKey ? todayRecord : loadDayRecord(dk);
+          rec.contextNote = e.currentTarget.value;
+          saveDayRecord(rec);
+          if (dk === todayDateKey) {
+            document.getElementById('today-context-note').value = rec.contextNote;
+          }
+          const preview = e.currentTarget.closest('.day-card').querySelector('.day-note-preview');
+          if (preview) preview.textContent = rec.contextNote ? `"${rec.contextNote}"` : 'No context note';
+        });
+      });
     }
 
-    // ==========================================================================
-    // 8. LIVE CENTRAL TIME TICKER
-    // ==========================================================================
+    /* ==========================================================================
+       9. CSV EXPORT & DEMO WEEK LOADER
+       ========================================================================== */
+    function exportCSV() {
+      const allDays = getAllSavedDays();
+      if (allDays.length === 0) {
+        showToast('No saved shifts to export yet.', 'warning');
+        return;
+      }
+
+      const headers = [
+        'Date', 'Day', 'Total Orders', 'Active Hours', 'Avg PPH', 'Target Met',
+        'Block 1 (6-7a)', 'Block 2 (7-8a)', 'Block 3 (8-9a)', 'Block 4 (9-10a)',
+        'Block 5 (10-11a)', 'Block 6 (11a-12p)', 'Block 7 (12-1p)', 'Block 8 (1-2p)',
+        'Block 9 (2-3p)', 'Context Note'
+      ];
+
+      const escapeCsv = val => `"${String(val).replace(/"/g, '""')}"`;
+
+      const rows = allDays.map(rec => {
+        const st = computeDayStats(rec);
+        const { weekday } = formatDayDisplay(rec.dateKey);
+        const blockVals = rec.blocks.map(b => b.orders);
+        return [
+          rec.dateKey,
+          weekday,
+          st.totalOrders,
+          st.activeHours,
+          st.avgPph.toFixed(2),
+          st.targetMet ? 'Yes' : 'No',
+          ...blockVals,
+          escapeCsv(rec.contextNote || '')
+        ].join(',');
+      });
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pph_workflow_log_${todayDateKey}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${allDays.length} shift(s) to CSV!`, 'success');
+    }
+
+    function loadDemoWeek() {
+      const baseDt = parseDateKeyUTC(todayDateKey);
+      const samples = [
+        { offset: -1, counts: [14, 13, 15, 14, 13, 0, 12, 13, 12], note: 'Smooth morning queue, slight slowdown after lunch' },
+        { offset: -2, counts: [15, 14, 14, 13, 14, 0, 13, 14, 13], note: 'Strong pace all day — 110 total' },
+        { offset: -3, counts: [13, 12, 11, 10, 12, 0, 11, 12, 11], note: 'System lag in Block 4 + several complex escalations' },
+        { offset: -4, counts: [14, 14, 13, 14, 12, 0, 12, 11, 12], note: 'Hit 102 orders cleanly' }
+      ];
+
+      samples.forEach(s => {
+        const dt = new Date(baseDt.getTime());
+        dt.setUTCDate(dt.getUTCDate() + s.offset);
+        const dk = formatDateKeyUTC(dt);
+        if (!localStorage.getItem(STORAGE_PREFIX + dk)) {
+          const rec = createBlankDayRecord(dk);
+          rec.contextNote = s.note;
+          rec.blocks.forEach((b, i) => { b.orders = s.counts[i]; });
+          saveDayRecord(rec);
+        }
+      });
+
+      selectedWeekKey = 'all';
+      renderWeeklyLog();
+      showToast('Sample shifts loaded into Weekly Log!', 'success');
+    }
+
+    /* ==========================================================================
+       10. CLOCK TICKER & INITIALIZATION
+       ========================================================================== */
     function tickClock() {
-      const now = new Date();
-      const liveInfo = getLiveShiftInfo(now);
+      const liveInfo = getLiveShiftInfo();
       const { ct } = liveInfo;
 
-      const expectedKey = `pph_standalone_shift_${ct.dateKey}`;
-      if (activeStorageKey !== expectedKey) {
-        loadState();
+      // Handle midnight Central Time rollover
+      if (ct.dateKey !== todayDateKey) {
+        todayDateKey = ct.dateKey;
+        todayRecord = loadDayRecord(todayDateKey);
+        document.getElementById('today-context-note').value = todayRecord.contextNote || '';
+        if (prefs.autoSync) activeBlockId = liveInfo.liveBlockId;
       }
 
       document.getElementById('live-clock').textContent = ct.timeStr;
       document.getElementById('tz-badge').textContent = ct.tzLabel;
-      document.getElementById('live-date-label').textContent = `${ct.dateStr} • U.S. Central`;
+      document.getElementById('live-date-label').textContent = `${ct.dateStr} • Central`;
 
-      const countdownEl = document.getElementById('hour-countdown-time');
-      const progressEl = document.getElementById('hour-progress-bar');
+      const cdEl = document.getElementById('hour-countdown');
+      const hrBar = document.getElementById('hour-progress-bar');
 
       if (liveInfo.phase === 'live') {
-        const minsLeft = Math.floor(liveInfo.secondsLeftInHour / 60);
-        const secsLeft = liveInfo.secondsLeftInHour % 60;
-        countdownEl.textContent = `${minsLeft}m ${String(secsLeft).padStart(2, '0')}s left`;
-        progressEl.style.width = `${Math.min(100, liveInfo.currentHourFraction * 100)}%`;
+        const mLeft = Math.floor(liveInfo.secondsLeftInHour / 60);
+        const sLeft = liveInfo.secondsLeftInHour % 60;
+        cdEl.textContent = `${mLeft}m ${String(sLeft).padStart(2, '0')}s left`;
+        hrBar.style.width = `${Math.min(100, liveInfo.currentHourFraction * 100)}%`;
       } else if (liveInfo.phase === 'pre') {
-        countdownEl.textContent = 'Starts 6:00 AM CT';
-        progressEl.style.width = '0%';
+        cdEl.textContent = 'Starts 6:00 AM CT';
+        hrBar.style.width = '0%';
       } else {
-        countdownEl.textContent = 'Shift Complete (3:00 PM CT)';
-        progressEl.style.width = '100%';
+        cdEl.textContent = 'Shift Complete (3 PM CT)';
+        hrBar.style.width = '100%';
       }
 
-      if (state.autoSync && state.activeBlockId !== liveInfo.liveBlockId) {
-        state.activeBlockId = liveInfo.liveBlockId;
-        saveState();
+      if (prefs.autoSync && activeBlockId !== liveInfo.liveBlockId) {
+        activeBlockId = liveInfo.liveBlockId;
         if (liveInfo.phase === 'live') {
-          showToast(`New Central Time hour! Auto-switched to Block ${liveInfo.liveBlockId}.`, 'info');
+          showToast(`Auto-switched to Block ${liveInfo.liveBlockId} CT`, 'info');
         }
       }
 
-      if (state.chimeEnabled && liveInfo.phase === 'live' && liveInfo.min === 55 && state.lastChimeHour !== liveInfo.hr) {
-        state.lastChimeHour = liveInfo.hr;
-        saveState();
+      const chimeKey = `${ct.dateKey}-${liveInfo.hr}`;
+      if (prefs.chimeEnabled && liveInfo.phase === 'live' && liveInfo.min === 55 && prefs.lastChimeKey !== chimeKey) {
+        prefs.lastChimeKey = chimeKey;
+        savePrefs();
         playChime();
-        showToast(`:55 Hourly Check! 5 minutes left in Block ${liveInfo.liveBlockId} (target: 12–15).`, 'warning');
+        showToast(`:55 Hourly Check! 5 min left in Block ${liveInfo.liveBlockId}.`, 'warning');
       }
 
-      renderAll();
+      if (currentTab === 'today') renderToday();
     }
 
-    // ==========================================================================
-    // 9. EVENT LISTENERS
-    // ==========================================================================
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tab-today').classList.toggle('active', tab === 'today');
+      document.getElementById('tab-weekly').classList.toggle('active', tab === 'weekly');
+      document.getElementById('view-today').classList.toggle('hidden', tab !== 'today');
+      document.getElementById('view-weekly').classList.toggle('hidden', tab !== 'weekly');
+      if (tab === 'weekly') renderWeeklyLog();
+      else renderToday();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      renderAll();
+      loadPrefs();
+      loadSnippets();
+      todayDateKey = getCentralParts().dateKey;
+      todayRecord = loadDayRecord(todayDateKey);
+      activeBlockId = prefs.autoSync ? getLiveShiftInfo().liveBlockId : 1;
+
+      const noteInput = document.getElementById('today-context-note');
+      noteInput.value = todayRecord.contextNote || '';
+
+      renderToday();
       renderSnippets();
       updateTimerUI();
       tickClock();
       setInterval(tickClock, 1000);
 
-      // Toggle U.S. Central Time (America/Chicago) vs Fixed CST (UTC-6)
+      // Tab switcher
+      document.getElementById('tab-today').addEventListener('click', () => switchTab('today'));
+      document.getElementById('tab-weekly').addEventListener('click', () => switchTab('weekly'));
+
+      // Timezone Toggle
       document.getElementById('btn-tz-toggle').addEventListener('click', () => {
-        currentTzMode = currentTzMode === TZ_MODES.CHICAGO ? TZ_MODES.FIXED_CST : TZ_MODES.CHICAGO;
-        localStorage.setItem(TZ_PREF_KEY, currentTzMode);
-        if (state.autoSync) {
-          state.activeBlockId = getLiveShiftInfo().liveBlockId;
-          saveState();
-        }
+        prefs.tzMode = prefs.tzMode === TZ_MODES.CHICAGO ? TZ_MODES.FIXED_CST : TZ_MODES.CHICAGO;
+        savePrefs();
+        if (prefs.autoSync) activeBlockId = getLiveShiftInfo().liveBlockId;
         tickClock();
-        const desc = currentTzMode === TZ_MODES.CHICAGO
-          ? 'U.S. Central Time (America/Chicago CST/CDT)'
-          : 'Fixed Central Standard Time (CST / UTC-6)';
-        showToast(`Clock switched to ${desc}`, 'info');
+        showToast(
+          prefs.tzMode === TZ_MODES.CHICAGO ? 'Switched to U.S. Central Time (America/Chicago)' : 'Switched to Fixed CST (UTC-6)',
+          'info'
+        );
       });
 
-      // +1 ORDER COMPLETED
-      document.getElementById('btn-complete-order').addEventListener('click', () => {
-        const blk = state.blocks.find(b => b.id === state.activeBlockId);
-        if (!blk) return;
+      // Auto-Sync & Chime
+      document.getElementById('btn-autosync').addEventListener('click', () => {
+        prefs.autoSync = !prefs.autoSync;
+        if (prefs.autoSync) activeBlockId = getLiveShiftInfo().liveBlockId;
+        savePrefs();
+        renderToday();
+        showToast(`Auto-Sync ${prefs.autoSync ? 'ON' : 'OFF'}`);
+      });
+
+      document.getElementById('btn-chime').addEventListener('click', () => {
+        prefs.chimeEnabled = !prefs.chimeEnabled;
+        savePrefs();
+        renderToday();
+        if (prefs.chimeEnabled) playChime();
+        showToast(`:55 Chime ${prefs.chimeEnabled ? 'ON' : 'OFF'}`);
+      });
+
+      // +1 ORDER COMPLETED & -1 Undo
+      const completeOrder = () => {
+        const blk = todayRecord.blocks[activeBlockId - 1];
         if (blk.status === 'lunch') {
           showToast('Selected block is set to 1-Hr Lunch. Tap an Active block first!', 'warning');
           return;
         }
-        blk.orders = (Number(blk.orders) || 0) + 1;
-        saveState();
-        renderAll();
+        blk.orders += 1;
+        saveDayRecord(todayRecord);
+        renderToday();
         resetTimer(true);
-      });
+      };
 
-      // -1 Undo
+      document.getElementById('btn-plus-order').addEventListener('click', completeOrder);
+
       document.getElementById('btn-undo-order').addEventListener('click', () => {
-        const blk = state.blocks.find(b => b.id === state.activeBlockId);
-        if (blk && blk.orders > 0) {
+        const blk = todayRecord.blocks[activeBlockId - 1];
+        if (blk.orders > 0) {
           blk.orders -= 1;
-          saveState();
-          renderAll();
-          showToast(`Removed 1 order from ${blk.label}.`);
+          saveDayRecord(todayRecord);
+          renderToday();
+          showToast(`Removed 1 order from Block ${activeBlockId}.`);
         }
       });
 
-      // Timer Start/Pause & Reset
+      // Keyboard '+' shortcut (ignored when typing in inputs)
+      window.addEventListener('keydown', e => {
+        if (currentTab !== 'today') return;
+        const tag = (document.activeElement && document.activeElement.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (e.key === '+' || e.key === '=') {
+          e.preventDefault();
+          completeOrder();
+        }
+      });
+
+      // Timer controls
       document.getElementById('btn-timer-toggle').addEventListener('click', () => {
         if (timerRunning) pauseTimer();
         else startTimer();
       });
+      document.getElementById('btn-timer-reset').addEventListener('click', () => resetTimer(false));
 
-      document.getElementById('btn-timer-reset').addEventListener('click', () => {
-        resetTimer(false);
+      // Today's Context Note auto-save
+      let noteFadeTimer = null;
+      noteInput.addEventListener('input', () => {
+        todayRecord.contextNote = noteInput.value;
+        saveDayRecord(todayRecord);
+        const ind = document.getElementById('note-saved-indicator');
+        ind.style.opacity = '1';
+        clearTimeout(noteFadeTimer);
+        noteFadeTimer = setTimeout(() => { ind.style.opacity = '0'; }, 1200);
       });
 
-      // Auto-Sync Toggle
-      document.getElementById('btn-autosync').addEventListener('click', () => {
-        state.autoSync = !state.autoSync;
-        if (state.autoSync) {
-          state.activeBlockId = getLiveShiftInfo().liveBlockId;
-          showToast(`Auto-Sync ON • Synced to Block ${state.activeBlockId} CT`, 'success');
-        } else {
-          showToast('Auto-Sync OFF • Manual block selection active');
-        }
-        saveState();
-        renderAll();
-      });
-
-      // :55 Chime Toggle
-      document.getElementById('btn-chime').addEventListener('click', () => {
-        state.chimeEnabled = !state.chimeEnabled;
-        saveState();
-        renderAll();
-        if (state.chimeEnabled) {
-          playChime();
-          showToast(':55 Hourly Chime ON', 'success');
-        } else {
-          showToast(':55 Hourly Chime OFF');
-        }
-      });
-
-      // Backfill Prior Hrs Modal
-      const backfillModal = document.getElementById('backfill-modal');
-      const backfillInput = document.getElementById('backfill-total-input');
-
+      // Backfill Modal
+      const bfModal = document.getElementById('backfill-modal');
+      const bfInput = document.getElementById('backfill-input');
       document.getElementById('btn-backfill').addEventListener('click', () => {
         const liveInfo = getLiveShiftInfo();
-        const priorActive = state.blocks.filter(b => b.id < liveInfo.liveBlockId && b.status !== 'lunch');
-        document.getElementById('backfill-desc').textContent = priorActive.length > 0
-          ? `Distributes orders evenly across ${priorActive.length} active block(s) prior to Block ${liveInfo.liveBlockId} CT.`
-          : 'You are in Block 1 (or pre-shift). Applies count directly to Block 1.';
-        backfillModal.classList.remove('hidden');
+        const prior = todayRecord.blocks.filter(b => b.id < liveInfo.liveBlockId && b.status !== 'lunch');
+        document.getElementById('backfill-desc').textContent = prior.length > 0
+          ? `Distributes orders evenly across ${prior.length} active block(s) before Block ${liveInfo.liveBlockId} CT.`
+          : 'You are in Block 1 (or pre-shift). Applies count to Block 1.';
+        bfModal.classList.remove('hidden');
       });
-
-      document.getElementById('backfill-minus').addEventListener('click', () => {
-        backfillInput.value = Math.max(0, (parseInt(backfillInput.value, 10) || 0) - 1);
+      document.getElementById('bf-minus').addEventListener('click', () => {
+        bfInput.value = Math.max(0, (parseInt(bfInput.value, 10) || 0) - 1);
       });
-
-      document.getElementById('backfill-plus').addEventListener('click', () => {
-        backfillInput.value = (parseInt(backfillInput.value, 10) || 0) + 1;
+      document.getElementById('bf-plus').addEventListener('click', () => {
+        bfInput.value = (parseInt(bfInput.value, 10) || 0) + 1;
       });
-
-      document.getElementById('backfill-cancel').addEventListener('click', () => {
-        backfillModal.classList.add('hidden');
-      });
-
-      document.getElementById('backfill-form').addEventListener('submit', (e) => {
+      document.getElementById('bf-cancel').addEventListener('click', () => bfModal.classList.add('hidden'));
+      document.getElementById('backfill-form').addEventListener('submit', e => {
         e.preventDefault();
-        const total = Math.max(0, parseInt(backfillInput.value, 10) || 0);
+        const total = Math.max(0, parseInt(bfInput.value, 10) || 0);
         const liveInfo = getLiveShiftInfo();
-        const priorActive = state.blocks.filter(b => b.id < liveInfo.liveBlockId && b.status !== 'lunch');
-
-        if (priorActive.length === 0) {
-          state.blocks[0].orders = total;
-          showToast(`Set Block 1 to ${total} orders.`, 'success');
+        const prior = todayRecord.blocks.filter(b => b.id < liveInfo.liveBlockId && b.status !== 'lunch');
+        if (prior.length === 0) {
+          todayRecord.blocks[0].orders = total;
         } else {
-          const base = Math.floor(total / priorActive.length);
-          let rem = total % priorActive.length;
-          priorActive.forEach((blk) => {
-            blk.orders = base + (rem > 0 ? 1 : 0);
+          const base = Math.floor(total / prior.length);
+          let rem = total % prior.length;
+          prior.forEach(b => {
+            b.orders = base + (rem > 0 ? 1 : 0);
             if (rem > 0) rem--;
           });
-          showToast(`Backfilled ${total} orders across ${priorActive.length} prior block(s)!`, 'success');
         }
-
-        if (state.autoSync) state.activeBlockId = liveInfo.liveBlockId;
-        saveState();
-        renderAll();
-        backfillModal.classList.add('hidden');
+        saveDayRecord(todayRecord);
+        renderToday();
+        bfModal.classList.add('hidden');
+        showToast(`Backfilled ${total} orders!`, 'success');
       });
 
-      // Reset Day
-      document.getElementById('btn-reset').addEventListener('click', () => {
-        openConfirmModal(
-          'Reset Entire Shift?',
-          'Clear all order counts back to 0 and restore default 6:00 AM – 3:00 PM CT blocks?',
+      // Reset Today
+      document.getElementById('btn-reset-today').addEventListener('click', () => {
+        openConfirm(
+          'Reset Today’s Shift?',
+          'This clears all 9 block counts and your context note for today back to 0. Past days in your Weekly Log will stay intact.',
           () => {
-            state.blocks = JSON.parse(JSON.stringify(DEFAULT_BLOCKS));
-            const liveInfo = getLiveShiftInfo();
-            state.activeBlockId = state.autoSync ? liveInfo.liveBlockId : 1;
+            todayRecord = createBlankDayRecord(todayDateKey);
+            saveDayRecord(todayRecord);
+            noteInput.value = '';
             resetTimer(false);
-            saveState();
-            renderAll();
-            showToast('Shift reset to 0 orders.');
+            renderToday();
+            showToast('Today reset to 0 orders.');
           }
         );
       });
 
-      // Add Custom Snippet Drawer
-      const snipForm = document.getElementById('add-snippet-form');
-      document.getElementById('btn-toggle-add-snippet').addEventListener('click', () => {
-        snipForm.classList.toggle('hidden');
-      });
-      document.getElementById('btn-cancel-snippet').addEventListener('click', () => {
-        snipForm.classList.add('hidden');
-      });
-      snipForm.addEventListener('submit', (e) => {
+      // Add Custom Snippet Modal
+      const snipModal = document.getElementById('snippet-modal');
+      document.getElementById('btn-open-snippet-modal').addEventListener('click', () => snipModal.classList.remove('hidden'));
+      document.getElementById('snip-cancel').addEventListener('click', () => snipModal.classList.add('hidden'));
+      document.getElementById('snippet-form').addEventListener('submit', e => {
         e.preventDefault();
-        const tag = document.getElementById('snippet-tag-input').value.trim();
-        const type = document.getElementById('snippet-type-input').value;
-        const text = document.getElementById('snippet-text-input').value.trim();
+        const tag = document.getElementById('snip-tag-in').value.trim();
+        const type = document.getElementById('snip-type-in').value;
+        const text = document.getElementById('snip-text-in').value.trim();
         if (!tag || !text) return;
-
-        state.snippets.unshift({
-          id: `snip-${Date.now()}`,
-          tag,
-          type,
-          text
-        });
-        saveState();
+        snippets.unshift({ id: `snip-${Date.now()}`, tag, type, text });
+        saveSnippets();
         renderSnippets();
-        snipForm.reset();
-        snipForm.classList.add('hidden');
-        showToast('Custom note snippet saved!', 'success');
+        e.target.reset();
+        snipModal.classList.add('hidden');
+        showToast('Custom snippet saved!', 'success');
       });
+
+      // Weekly Log controls
+      document.getElementById('week-selector').addEventListener('change', e => {
+        selectedWeekKey = e.target.value;
+        renderWeeklyLog();
+      });
+      document.getElementById('btn-export-csv').addEventListener('click', exportCSV);
+      document.getElementById('btn-load-demo').addEventListener('click', loadDemoWeek);
     });
   </script>
 </body>
